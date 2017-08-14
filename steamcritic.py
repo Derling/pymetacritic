@@ -1,7 +1,9 @@
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 
-'''url = 'http://www.metacritic.com/game/playstation-4/the-witcher-3-wild-hunt/user-reviews'
+#testing case url, make it dynamic in the future
+#first half gets all user reviews. move into function in the future.
+url = 'http://www.metacritic.com/game/playstation-4/the-witcher-3-wild-hunt/user-reviews'
 req = Request(url,headers={'User-Agent': 'Mozilla/5.0'})
 html_doc = urlopen(req).read()
 soup = BeautifulSoup(html_doc,'lxml')
@@ -15,8 +17,8 @@ for user_review in user_elements:
                 'review':review,'score':int(score)}
 for k,v in user_reviews.items():
     print(k,':', v, end='\n\n\n')
-   ''' 
-    
+
+#second half gets all critic reviews. move into function in the future.
 url = 'http://www.metacritic.com/game/playstation-4/the-witcher-3-wild-hunt/critic-reviews'
 req = Request(url,headers={'user-Agent': 'Mozilla/5.0'})
 html_doc = urlopen(req).read()
@@ -31,5 +33,4 @@ for critic_review in critic_elements:
     critic_reviews[index] = {'name':critic_name,
                   'review':review,'score':int(score)}
     index += 1
-
-'''Both test cases are good, use ?page parameter to ask for more reviews'''
+#both test cases produce wanted results, use ?page paramater to ask for more pages and retrieve all reviews for critic and user.
