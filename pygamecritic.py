@@ -4,8 +4,10 @@ from bs4 import BeautifulSoup
 ''' 
     Testing proved a bit buggy, after multiple tests and lots of html reviews,
     I have concluded that some of metacritics reviews get pulled from the site.
-    Many of the pulled reviews are actual critic reviews, not user reviews.
-    Due to this fact, many of the sites numbers are inaccurate. 
+    Many of the pulled reviews are actually critic reviews, not user reviews.
+    My tests have confirmed this because they always produce the correct number
+    of user reviews stated on the game's metacritic summary site.
+    Due to this discovery, many of the sites numbers are inaccurate. 
     ie, the fourth review for the pc version of the witcher 3 the wild hunt is
     a blank review, used as padding it seems for some reason. To test this 
     enter pc as the console and "the witcher 3 the wild hunt" as the game.
@@ -29,6 +31,7 @@ def get_all_metacritic_data(console, game, critics=True, users=True, pool=1):
     url = 'http://www.metacritic.com/game/{0}/{1}' \
         .format(console.replace(' ','-'),game.replace(' ','-'))
     results = {}
+    print('fetching results')
     if critics : results['critics'] = get_critic_reviews(url,pool)
     if users : results['users'] = get_user_reviews(url,pool)
     print('Number of user reviews: ',len(user_reviews))
@@ -130,7 +133,7 @@ if __name__ == '__main__':
     #set pool to 1 to test if script pulls all reviews.
     try:
         get_all_metacritic_data(input('Enter the console:').strip()
-                            ,input('Enter the game:').strip().lower(),pool=0)
+                            ,input('Enter the game:').strip().lower(),pool=1)
     except Exception:
         raise Exception(
             "Ran into an error, most likely mispelled console or game title")
