@@ -2,7 +2,7 @@ from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 
 ''' 
-    Testing proved a bit buggy, after multiple tests and lots of html rerviews,
+    Testing proved a bit buggy, after multiple tests and lots of html reviews,
     I have concluded that some of metacritics reviews get pulled from the site.
     Many of the pulled reviews are actual critic reviews, not user reviews.
     Due to this fact, many of the sites numbers are inaccurate. 
@@ -134,4 +134,3 @@ if __name__ == '__main__':
     except Exception:
         raise Exception(
             "Ran into an error, most likely mispelled console or game title")
-        
