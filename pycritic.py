@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 
 #testing case url, make it dynamic in the future
 #first half gets all user reviews. move into function in the future.
+
+ 
 url = 'http://www.metacritic.com/game/playstation-4/the-witcher-3-wild-hunt/user-reviews'
 req = Request(url,headers={'User-Agent': 'Mozilla/5.0'})
 html_doc = urlopen(req).read()
