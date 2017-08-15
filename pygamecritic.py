@@ -47,20 +47,20 @@ def get_user_reviews(url, pool, page=0):
     user_elements = 0
     if ol:
             user_elements = ol[0].find_all('li',{'class':'review user_review'})
+    #If statement to check if there is at least one review
+    if soup.find('li',{'class':'review user_review first_review'}) :
+        f_r = get_special_review(soup.find('li',{'class':'review user_review first_review'}))
+        user_reviews[f_r[0]] = {'name':f_r[1], 'review':f_r[2], 'score':f_r[3]}
+    #If statement to check if there are at laest two 
+    if soup.find('li',{'class':'review user_review last_review'}): 
+        l_r = get_special_review(soup.find('li',{'class':'review user_review last_review'}))
+        user_reviews[l_r[0]] = {'name':l_r[1], 'review':l_r[2], 'score':l_r[3]}
     #If statements to check if there is only one review
     if soup.find('li',{'class':'review user_review first_review last_review'}):
         only_review = parse_tag(
             soup.find('li',{'class':'review user_review first_review last_review'}))
         user_reviews[only_review[0]] = {'name':only_review[1],
                     'review':only_review[2],'score':only_review[2]}
-    #If statement to check if there is at least one review
-    if soup.find('li',{'class':'review user_review first_review'}) :
-        f_r = get_special_review(soup.find('li',{'class':'review user_review first_review'}))
-        user_reviews[f_r[0]] = {'name':f_r[1], 'review':f_r[2], 'score':f_r[3]}
-    #If statement to check if there is at laest two 
-    if soup.find('li',{'class':'review user_review last_review'}): 
-        l_r = get_special_review(soup.find('li',{'class':'review user_review last_review'}))
-        user_reviews[l_r[0]] = {'name':l_r[1], 'review':l_r[2], 'score':l_r[3]}
     # necessary if statement in case there are less than 3 reviews
     if user_elements: 
         for user_review in user_elements:
@@ -83,20 +83,20 @@ def get_critic_reviews(url, pool, page=0):
     critic_elements = 0
     if ol:
         critic_elements = ol[0].find_all('li',{'class':'review critic_review'})
+    #If statement to check if there is at least one review
+    if soup.find('li',{'class':'review critic_review first_review'}):
+        f_r = get_special_review(soup.find('li',{'class':'review critic_review first_review'}), False)
+        critic_reviews[f_r[0]] = {'review':f_r[1], 'score':f_r[2]}
+    #If statement to check if there are at laest two 
+    if soup.find('li',{'class':'review critic_review last_review'}):
+        l_r = get_special_review(soup.find('li',{'class':'review critic_review last_review'}), False)
+        critic_reviews[l_r[0]] = {'review':l_r[1], 'score':l_r[2]}
     #If statement to check if there is only one review
     if soup.find('li',{'class':'review critic_review first_review last_review'}):
         only_review = parse_tag(
             soup.find('li',{'class':'review critic_review first_review last_review'}))
         critic_reviews[only_review[0]] = {'review':only_review[1]
                                 ,'score':only_review[2]}
-    #If statement to check if there is at least one review
-    if soup.find('li',{'class':'review critic_review first_review'}):
-        f_r = get_special_review(soup.find('li',{'class':'review critic_review first_review'}), False)
-        critic_reviews[f_r[0]] = {'review':f_r[1], 'score':f_r[2]}
-    #If statement to check if there is at laest two 
-    if soup.find('li',{'class':'review critic_review last_review'}):
-        l_r = get_special_review(soup.find('li',{'class':'review critic_review last_review'}), False)
-        critic_reviews[l_r[0]] = {'review':l_r[1], 'score':l_r[2]}
     #If statement in case there are more than 2 reviews
     if critic_elements:
         for critic_review in critic_elements:
