@@ -1,5 +1,9 @@
 from metacritic import PyGameCritic as pgn
 import logging 
+import matplotlib.pyplot as plt
 
-''' Script for testing PyGameCritic use. '''
-#End goal: create bar graphs that compares two games scores side by side.
+#Module for generating bar graphs comparing the metacritic scores of a game
+#accross multiple consoles. 
+class MetaGraphs():
+    pass
+    

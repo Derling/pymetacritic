@@ -39,7 +39,8 @@ class PyGameCritic():
         self.reviews = reviews
         self.get_all_metacritic_data()
         self.calculateAvgs()
-        self.calculateTotals()
+        self.userTotals()
+        self.criticTotals()
         
     #Main method, pool parameter used to determine whether we want all reviews 
     def get_all_metacritic_data(self): 
@@ -180,8 +181,8 @@ class PyGameCritic():
                         for k in self.critic_reviews])/len(self.critic_reviews)
         self.data['critics']['average'] = round(crit_avg)
     
-    #calculate the total number of times x rating occurs for users and critic 
-    def calculateTotals(self):
+    #calculate the total number of times x rating occurs for users
+    def userTotals(self):
         self.data['users']['totals'] = {}
         #0-4 negative(red), 5-7 mixed(yellow),8-10 positive(green) 
         for _id in self.user_reviews :
@@ -202,6 +203,9 @@ class PyGameCritic():
                         self.data['users']['totals'].get('positive', 0) + 1
             self.data['users']['totals']['num_of_reviews'] = \
                 self.data['users']['totals'].get('num_of_reviews', 0) + 1
+    
+    #calculate the toatl number of times x rating occurs for critics
+    def criticTotals(self):
         self.data['critics']['totals'] = {}
         for _id in self.critic_reviews:
             if _id == 'average' or _id == 'totals':#skip through these keys as
