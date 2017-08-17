@@ -30,20 +30,26 @@ class PyGameCritic():
     def __init__(self, console, game, critics=True, users=True, pool=True, reviews=False):
         self.user_reviews = {}
         self.critic_reviews = {}
-        self.reviews = {}
-        self.get_all_metacritic_data(console, game, critics, users, pool, reviews)
+        self.data = {}
+        self.critics = critics
+        self.users = users
+        self.pool = pool
+        self.console = console
+        self.game = game
+        self.reviews = reviews
+        self.get_all_metacritic_data()
         self.calculateAvgs()
-        
+        self.calculateTotals()
         
     #Main method, pool parameter used to determine whether we want all reviews 
-    def get_all_metacritic_data(self, console, game, critics, users, pool, reviews): 
+    def get_all_metacritic_data(self): 
         url = 'http://www.metacritic.com/game/{0}/{1}' \
-            .format(console.replace(' ','-'),game.replace(' ','-'))
-        if critics : self.reviews['critics'] = self.get_critic_reviews(url, pool, reviews)
-        if users : self.reviews['users'] = self.get_user_reviews(url, pool, reviews)
+            .format(self.console.replace(' ','-'),self.game.replace(' ','-'))
+        if self.critics : self.data['critics'] = self.get_critic_reviews(url)
+        if self.users : self.data['users'] = self.get_user_reviews(url)
 
     #get user reviews
-    def get_user_reviews(self, url, pool, reviews, page=0):
+    def get_user_reviews(self, url, page=0):
         req = Request(url + '/user-reviews?page=' + str(page) 
                         , headers={'User-Agent': 'Mozilla/5.0'})
         html_doc = urlopen(req).read()
@@ -54,23 +60,23 @@ class PyGameCritic():
             user_elements = ol.find_all('li',{'class':'review user_review'})
         #If statement to check if there is at least one review
         if soup.find('li',{'class':'review user_review first_review'}) :
-            f_r = self.get_special_review(soup.find('li',{'class':'review user_review first_review'}), reviews)
-            if reviews:
+            f_r = self.get_special_review(soup.find('li',{'class':'review user_review first_review'}))
+            if self.reviews:
                 self.user_reviews[f_r[0]] = {'name':f_r[1], 'review':f_r[2], 'score':f_r[3]}
             else :
                 self.user_reviews[f_r[0]] = {'name':f_r[1], 'score':f_r[2]}
         #If statement to check if there are at laest two 
         if soup.find('li',{'class':'review user_review last_review'}): 
-            l_r = self.get_special_review(soup.find('li',{'class':'review user_review last_review'}), reviews)
-            if reviews:
+            l_r = self.get_special_review(soup.find('li',{'class':'review user_review last_review'}))
+            if self.reviews:
                 self.user_reviews[l_r[0]] = {'name':l_r[1], 'review':l_r[2], 'score':l_r[3]}
             else:
                 self.user_reviews[l_r[0]] = {'name':l_r[1], 'score':l_r[2]}
         #If statements to check if there is only one review
         elif soup.find('li',{'class':'review user_review first_review last_review'}):
             only_review = self.parse_tag(
-                    soup.find('li',{'class':'review user_review first_review last_review'}), reviews)
-            if reviews:
+                    soup.find('li',{'class':'review user_review first_review last_review'}))
+            if self.reviews:
                 self.user_reviews[only_review[0]] = {'name':only_review[1],
                          'review':only_review[2],'score':only_review[3]}
             else:
@@ -79,8 +85,8 @@ class PyGameCritic():
         # necessary if statement in case there are less than 3 reviews
         if user_elements: 
             for user_review in user_elements:
-                data = self.parse_tag(user_review, reviews)
-                if reviews:
+                data = self.parse_tag(user_review)
+                if self.reviews:
                     self.user_reviews[user_review['id']] = {'name':data[0],
                                 'review':data[1], 'score':int(data[2])}
                 else:
@@ -88,12 +94,12 @@ class PyGameCritic():
                                      'score':int(data[1])}
         # if pool = 1 and there are more reviews on a different webpage:
         #         get all the user reviews for next page    
-        if pool and soup.find('a', {'class':'action','rel':'next'}, href=True):
-            self.get_user_reviews(url, pool, reviews, page+1)
+        if self.pool and soup.find('a', {'class':'action','rel':'next'}, href=True):
+            self.get_user_reviews(url, page+1)
         return self.user_reviews
 
     # get critic rerviews
-    def get_critic_reviews(self, url, pool, reviews, page=0):
+    def get_critic_reviews(self, url, page=0):
         req = Request(url + '/critic-reviews?page=' + str(page)
                       , headers={'user-Agent': 'Mozilla/5.0'})
         html_doc = urlopen(req).read()
@@ -104,23 +110,23 @@ class PyGameCritic():
             critic_elements = ol.find_all('li',{'class':'review critic_review'})
             #If statement to check if there is at least one review
         if soup.find('li',{'class':'review critic_review first_review'}):
-            f_r = self.get_special_review(soup.find('li',{'class':'review critic_review first_review'}), reviews, False)
-            if reviews:
+            f_r = self.get_special_review(soup.find('li',{'class':'review critic_review first_review'}), False)
+            if self.reviews:
                 self.critic_reviews[f_r[0]] = {'review':f_r[1], 'score':f_r[2]}
             else:
                 self.critic_reviews[f_r[0]] = {'score':f_r[1]}
         #If statement to check if there are at laest two 
         if soup.find('li',{'class':'review critic_review last_review'}):
-            l_r = self.get_special_review(soup.find('li',{'class':'review critic_review last_review'}), reviews, False)
-            if reviews:
+            l_r = self.get_special_review(soup.find('li',{'class':'review critic_review last_review'}), False)
+            if self.reviews:
                 self.critic_reviews[l_r[0]] = {'review':l_r[1], 'score':l_r[2]}
             else:
                 self.critic_reviews[l_r[0]] = {'score':l_r[1]}
         #If statement to check if there is only one review
         elif soup.find('li',{'class':'review critic_review first_review last_review'}):
             only_review = self.parse_tag(
-                    soup.find('li',{'class':'review critic_review first_review last_review'}), reviews)
-            if reviews:
+                    soup.find('li',{'class':'review critic_review first_review last_review'}))
+            if self.reviews:
                 self.critic_reviews[only_review[0]] = {'review':only_review[1],
                                         'score':only_review[2]}
             else:
@@ -128,20 +134,20 @@ class PyGameCritic():
         #If statement in case there are more than 2 reviews
         if critic_elements:
             for critic_review in critic_elements:
-                data = self.parse_tag(critic_review, reviews)
-                if reviews:
+                data = self.parse_tag(critic_review)
+                if self.reviews:
                     self.critic_reviews[data[0]] = {'review':data[1], 'score':data[2]}
                 else:
                     self.critic_reviews[data[0]] = {'score':data[1]}
         # if pool = 1 and there are more reviews on a different webpage:
         #         get all the user reviews for next page
-        if pool and soup.find('a', {'class':'action','rel':'next'}, href=True):
-            self.get_user_reviews(url, pool, reviews, page+1)
+        if self.pool and soup.find('a', {'class':'action','rel':'next'}, href=True):
+            self.get_user_reviews(url, page+1)
         return self.critic_reviews
 
     #extrace li element literals
-    def parse_tag(self, tag_data, reviews):
-        if reviews:
+    def parse_tag(self, tag_data):
+        if self.reviews:
             return (
                     tag_data.find('a',href=True).getText(),
                     tag_data.find('div',{'class':'review_body'}).getText(),
@@ -151,16 +157,16 @@ class PyGameCritic():
                 tag_data.find('div',{'class':'metascore_w'}).getText())
 
     #extract first and last review 
-    def get_special_review(self, tag, reviews, user=True):
+    def get_special_review(self, tag, user=True):
         if user:
-            tag_data = self.parse_tag(tag, reviews)
-            if reviews:
+            tag_data = self.parse_tag(tag)
+            if self.reviews:
                 return(tag['id'],tag_data[0],tag_data[1],
                        tag_data[2])
             return(tag['id'],tag_data[0],tag_data[1])
         else:
-            tag_data = self.parse_tag(tag, reviews)
-            if reviews:
+            tag_data = self.parse_tag(tag)
+            if self.reviews:
                 return(tag_data[0],tag_data[1],
                        tag_data[2])
             return(tag_data[0],tag_data[1])
@@ -169,12 +175,58 @@ class PyGameCritic():
     def calculateAvgs(self):
         user_avg = sum([int(self.user_reviews[k]['score']) 
                         for k in self.user_reviews])/len(self.user_reviews)
-        self.reviews['users']['average'] = round(user_avg,1)
+        self.data['users']['average'] = round(user_avg,1)
         crit_avg = sum([int(self.critic_reviews[k]['score']) 
                         for k in self.critic_reviews])/len(self.critic_reviews)
-        self.reviews['critics']['average'] = round(crit_avg)
+        self.data['critics']['average'] = round(crit_avg)
     
-
+    #calculate the total number of times x rating occurs for users and critic 
+    def calculateTotals(self):
+        self.data['users']['totals'] = {}
+        #0-4 negative(red), 5-7 mixed(yellow),8-10 positive(green) 
+        for _id in self.user_reviews :
+            #Skip the average and totals key, as they do not contain reviews.
+            if _id == 'average' or _id == 'totals':#skip through these keys
+                continue                           #as they are not reviews
+            rating = int(self.user_reviews[_id]['score'])
+            self.data['users']['totals'][rating] = \
+                self.data['users']['totals'].get(rating, 0) + 1
+            if rating < 5 : 
+                self.data['users']['totals']['negative'] = \
+                        self.data['users']['totals'].get('negative', 0) + 1
+            elif rating < 8 :
+                self.data['users']['totals']['mixed'] = \
+                        self.data['users']['totals'].get('mixed', 0) + 1
+            else :
+                self.data['users']['totals']['positive'] = \
+                        self.data['users']['totals'].get('positive', 0) + 1
+            self.data['users']['totals']['num_of_reviews'] = \
+                self.data['users']['totals'].get('num_of_reviews', 0) + 1
+        self.data['critics']['totals'] = {}
+        for _id in self.critic_reviews:
+            if _id == 'average' or _id == 'totals':#skip through these keys as
+                continue                           #they are not reviews
+            rating = int(self.critic_reviews[_id]['score'])
+            self.data['critics']['totals'][rating] = \
+                self.data['critics']['totals'].get(rating, 0) + 1
+            if rating < 50:
+                self.data['critics']['totals']['negative'] = \
+                    self.data['critics']['totals'].get('negative', 0) + 1
+            elif rating < 75:
+                self.data['critics']['totals']['mixed'] = \
+                    self.data['critics']['totals'].get('mixed', 0) + 1
+            else: 
+                 self.data['critics']['totals']['positive'] = \
+                     self.data['critics']['totals'].get('positive', 0) + 1
+            self.data['critics']['totals']['num_of_reviews'] = \
+                self.data['critics']['totals'].get('num_of_reviews', 0) + 1
+                
+    #standard __repr__ method
+    def __repr__(self):
+        return 'PyGameCritic("{0}", "{1}", critics={2},users={3}, pool={4},'\
+                ' reviews={5})'.format(self.console,self.game,self.critics,
+                                self.users,self.pool,self.reviews)
+        
 if __name__ == '__main__':
     #set pool to 1 to test if script pulls all reviews.
     try:
