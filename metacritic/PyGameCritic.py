@@ -34,6 +34,7 @@ class PyGameCritic():
         self.get_all_metacritic_data(console, game, critics, users, pool, reviews)
         self.calculateAvgs()
         
+        
     #Main method, pool parameter used to determine whether we want all reviews 
     def get_all_metacritic_data(self, console, game, critics, users, pool, reviews): 
         url = 'http://www.metacritic.com/game/{0}/{1}' \
@@ -168,10 +169,11 @@ class PyGameCritic():
     def calculateAvgs(self):
         user_avg = sum([int(self.user_reviews[k]['score']) 
                         for k in self.user_reviews])/len(self.user_reviews)
-        self.user_reviews['average'] = round(user_avg,1)
+        self.reviews['users']['average'] = round(user_avg,1)
         crit_avg = sum([int(self.critic_reviews[k]['score']) 
                         for k in self.critic_reviews])/len(self.critic_reviews)
-        self.critic_reviews['average'] = round(crit_avg)
+        self.reviews['critics']['average'] = round(crit_avg)
+    
 
 if __name__ == '__main__':
     #set pool to 1 to test if script pulls all reviews.
