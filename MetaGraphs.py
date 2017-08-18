@@ -4,6 +4,6 @@ import matplotlib.pyplot as plt
 
 #Module for generating bar graphs comparing the metacritic scores of a game
 #accross multiple consoles. 
-class MetaGraphs():
+class MetaGraphs(plt):#extend pyplot 
     pass
     
