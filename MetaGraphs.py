@@ -19,8 +19,9 @@ class MetaGraphs():
 
     def find_consoles(self):
     	for console in CONSOLES:
-    		try: # try all consoles to find the consoles that the game was
-    			 # released on.
+    		#If the game is released on a console, add the class instance to
+    		#data array
+    		try: 
     			tmp = pgn.PyGameCritic(console,self.game)
     			self.data.append(tmp)
     		except Exception as e:
