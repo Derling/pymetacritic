@@ -235,8 +235,8 @@ class PyGameCritic():
     
     #standard __str__ method
     def __str__(self):
-        return '{0} for {1} has {2} user reviews and {3} critic reviews'.
-                    format(self.game.title(),self.console.title(),
+        return '{0} for {1} has {2} user reviews and {3} critic reviews'.format(
+                        self.game.title(),self.console.title(),
                         len(self.user_reviews)-2,len(self.critic_reviews)-2)
         
 if __name__ == '__main__':
