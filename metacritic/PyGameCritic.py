@@ -233,7 +233,7 @@ class PyGameCritic():
                 ' reviews={5})'.format(self.console,self.game,self.critics,
                                 self.users,self.pool,self.reviews)
     
-    #print method call __str__
+    #standard __str__ method
     def __str__(self):
         return '{0} for {1} has {2} user reviews and {3} critic reviews'.
                     format(self.game.title(),self.console.title(),
