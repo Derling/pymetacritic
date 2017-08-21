@@ -34,8 +34,8 @@ class PyGameCritic():
         self.critics = critics
         self.users = users
         self.pool = pool
-        self.console = console.lower()
-        self.game = game.lower()
+        self.console = console
+        self.game = game
         self.reviews = reviews
         self.get_all_metacritic_data()
         self.calculateAvgs()
@@ -44,8 +44,9 @@ class PyGameCritic():
         
     #Main method, pool parameter used to determine whether we want all reviews 
     def get_all_metacritic_data(self): 
-        url = 'http://www.metacritic.com/game/{0}/{1}' \
-            .format(self.console.replace(' ','-'),self.game.replace(' ','-'))
+        url = 'http://www.metacritic.com/game/{0}/{1}'.format(
+                    self.console.lower().replace(' ','-'),
+                    self.game.lower().replace(' ','-'))
         if self.critics : self.get_critic_reviews(url)
         if self.users : self.get_user_reviews(url)
 
@@ -184,48 +185,50 @@ class PyGameCritic():
     #calculate the total number of times x rating occurs for users
     def userTotals(self):
         self.user_reviews['totals'] = {}
+        self.user_reviews['summary'] = {}
         #0-4 negative(red), 5-7 mixed(yellow),8-10 positive(green) 
         for _id in self.user_reviews :
             #Skip the average and totals key, as they do not contain reviews.
-            if _id == 'average' or _id == 'totals':
+            if _id == 'average' or _id == 'totals' or _id == 'summary':
                 continue                           
             rating = int(self.user_reviews[_id]['score'])
             self.user_reviews['totals'][rating] = \
                 self.user_reviews['totals'].get(rating, 0) + 1
             if rating < 5 : 
-                self.user_reviews['totals']['negative'] = \
-                        self.user_reviews['totals'].get('negative', 0) + 1
+                self.user_reviews['summary']['negative_reviews'] = \
+                        self.user_reviews['summary'].get('negative_reviews', 0) + 1
             elif rating < 8 :
-                self.user_reviews['totals']['mixed'] = \
-                        self.user_reviews['totals'].get('mixed', 0) + 1
+                self.user_reviews['summary']['mixed_reviews'] = \
+                        self.user_reviews['summary'].get('mixed_reviews', 0) + 1
             else :
-                self.user_reviews['totals']['positive'] = \
-                        self.user_reviews['totals'].get('positive', 0) + 1
-            self.user_reviews['totals']['num_of_reviews'] = \
-                self.user_reviews['totals'].get('num_of_reviews', 0) + 1
+                self.user_reviews['summary']['positive_reviews'] = \
+                        self.user_reviews['summary'].get('positive_reviews', 0) + 1
+            self.user_reviews['summary']['num_of_reviews'] = \
+                self.user_reviews['summary'].get('num_of_reviews', 0) + 1
     
     #calculate the toatl number of times x rating occurs for critics
     def criticTotals(self):
         self.critic_reviews['totals'] = {}
+        self.critic_reviews['summary'] = {}
         #0-49 negative(red),50-74 mixed(yellow), 75-100 positive(green)
         for _id in self.critic_reviews:
             #Skip the average and totals key, as they do not contain reviews.
-            if _id == 'average' or _id == 'totals':
+            if _id == 'average' or _id == 'totals' or _id == 'summary':
                 continue                           
             rating = int(self.critic_reviews[_id]['score'])
             self.critic_reviews['totals'][rating] = \
                 self.critic_reviews['totals'].get(rating, 0) + 1
             if rating < 50:
-                self.critic_reviews['totals']['negative'] = \
-                    self.critic_reviews['totals'].get('negative', 0) + 1
+                self.critic_reviews['summary']['negative_reviews'] = \
+                    self.critic_reviews['summary'].get('negative_reviews', 0) + 1
             elif rating < 75:
-                self.critic_reviews['totals']['mixed'] = \
-                    self.critic_reviews['totals'].get('mixed', 0) + 1
+                self.critic_reviews['summary']['mixed_reviews'] = \
+                    self.critic_reviews['summary'].get('mixed_reviews', 0) + 1
             else: 
-                 self.critic_reviews['totals']['positive'] = \
-                     self.critic_reviews['totals'].get('positive', 0) + 1
-            self.critic_reviews['totals']['num_of_reviews'] = \
-                self.critic_reviews['totals'].get('num_of_reviews', 0) + 1
+                 self.critic_reviews['summary']['positive_reviews'] = \
+                     self.critic_reviews['summary'].get('positive_reviews', 0) + 1
+            self.critic_reviews['summary']['num_of_reviews'] = \
+                self.critic_reviews['summary'].get('num_of_reviews', 0) + 1
                 
     #standard __repr__ method
     def __repr__(self):
@@ -236,8 +239,9 @@ class PyGameCritic():
     #standard __str__ method
     def __str__(self):
         return '{0} for {1} has {2} user reviews and {3} critic reviews'.format(
-                        self.game.title(),self.console.title(),
-                        len(self.user_reviews)-2,len(self.critic_reviews)-2)
+                        self.game, self.console, 
+                        self.user_reviews['summary']['num_of_reviews'],
+                        self.critic_reviews['summary']['num_of_reviews'])
         
 if __name__ == '__main__':
     #set pool to 1 to test if script pulls all reviews.
