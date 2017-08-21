@@ -34,8 +34,8 @@ class PyGameCritic():
         self.critics = critics
         self.users = users
         self.pool = pool
-        self.console = console
-        self.game = game
+        self.console = console.lower()
+        self.game = game.lower()
         self.reviews = reviews
         self.get_all_metacritic_data()
         self.calculateAvgs()
@@ -230,13 +230,19 @@ class PyGameCritic():
         return 'PyGameCritic("{0}", "{1}", critics={2},users={3}, pool={4},'\
                 ' reviews={5})'.format(self.console,self.game,self.critics,
                                 self.users,self.pool,self.reviews)
+    
+    #print method call __str__
+    def __str__(self):
+        return '{0} for {1} has {2} user reviews and {3} critic reviews'.
+                    format(self.game.title(),self.console.title(),
+                        len(self.user_reviews)-2,len(self.critic_reviews)-2)
         
 if __name__ == '__main__':
     #set pool to 1 to test if script pulls all reviews.
     try:
-        print(PyGameCritic(input('Enter the console:').strip()
-                            ,input('Enter the game:').strip().lower())
-                            .critic_reviews['totals'])
+        PyGameCritic(input('Enter the console:').strip()
+                            ,input('Enter the game:').strip())
+                            
 
     except Exception as e:
         raise Exception(
