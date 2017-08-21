@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 
@@ -30,7 +31,6 @@ class PyGameCritic():
     def __init__(self, console, game, critics=True, users=True, pool=True, reviews=False):
         self.user_reviews = {}
         self.critic_reviews = {}
-        self.data = {}
         self.critics = critics
         self.users = users
         self.pool = pool
@@ -46,8 +46,8 @@ class PyGameCritic():
     def get_all_metacritic_data(self): 
         url = 'http://www.metacritic.com/game/{0}/{1}' \
             .format(self.console.replace(' ','-'),self.game.replace(' ','-'))
-        if self.critics : self.data['critics'] = self.get_critic_reviews(url)
-        if self.users : self.data['users'] = self.get_user_reviews(url)
+        if self.critics : self.get_critic_reviews(url)
+        if self.users : self.get_user_reviews(url)
 
     #get user reviews
     def get_user_reviews(self, url, page=0):
@@ -176,54 +176,54 @@ class PyGameCritic():
     def calculateAvgs(self):
         user_avg = sum([int(self.user_reviews[k]['score']) 
                         for k in self.user_reviews])/len(self.user_reviews)
-        self.data['users']['average'] = round(user_avg,1)
+        self.user_reviews['average'] = round(user_avg,1)
         crit_avg = sum([int(self.critic_reviews[k]['score']) 
                         for k in self.critic_reviews])/len(self.critic_reviews)
-        self.data['critics']['average'] = round(crit_avg)
+        self.critic_reviews['average'] = round(crit_avg)
     
     #calculate the total number of times x rating occurs for users
     def userTotals(self):
-        self.data['users']['totals'] = {}
+        self.user_reviews['totals'] = {}
         #0-4 negative(red), 5-7 mixed(yellow),8-10 positive(green) 
         for _id in self.user_reviews :
             #Skip the average and totals key, as they do not contain reviews.
             if _id == 'average' or _id == 'totals':#skip through these keys
                 continue                           #as they are not reviews
             rating = int(self.user_reviews[_id]['score'])
-            self.data['users']['totals'][rating] = \
-                self.data['users']['totals'].get(rating, 0) + 1
+            self.user_reviews['totals'][rating] = \
+                self.user_reviews['totals'].get(rating, 0) + 1
             if rating < 5 : 
-                self.data['users']['totals']['negative'] = \
-                        self.data['users']['totals'].get('negative', 0) + 1
+                self.user_reviews['totals']['negative'] = \
+                        self.user_reviews['totals'].get('negative', 0) + 1
             elif rating < 8 :
-                self.data['users']['totals']['mixed'] = \
-                        self.data['users']['totals'].get('mixed', 0) + 1
+                self.user_reviews['totals']['mixed'] = \
+                        self.user_reviews['totals'].get('mixed', 0) + 1
             else :
-                self.data['users']['totals']['positive'] = \
-                        self.data['users']['totals'].get('positive', 0) + 1
-            self.data['users']['totals']['num_of_reviews'] = \
-                self.data['users']['totals'].get('num_of_reviews', 0) + 1
+                self.user_reviews['totals']['positive'] = \
+                        self.user_reviews['totals'].get('positive', 0) + 1
+            self.user_reviews['totals']['num_of_reviews'] = \
+                self.user_reviews['totals'].get('num_of_reviews', 0) + 1
     
     #calculate the toatl number of times x rating occurs for critics
     def criticTotals(self):
-        self.data['critics']['totals'] = {}
+        self.critic_reviews['totals'] = {}
         for _id in self.critic_reviews:
             if _id == 'average' or _id == 'totals':#skip through these keys as
                 continue                           #they are not reviews
             rating = int(self.critic_reviews[_id]['score'])
-            self.data['critics']['totals'][rating] = \
-                self.data['critics']['totals'].get(rating, 0) + 1
+            self.critic_reviews['totals'][rating] = \
+                self.critic_reviews['totals'].get(rating, 0) + 1
             if rating < 50:
-                self.data['critics']['totals']['negative'] = \
-                    self.data['critics']['totals'].get('negative', 0) + 1
+                self.critic_reviews['totals']['negative'] = \
+                    self.critic_reviews['totals'].get('negative', 0) + 1
             elif rating < 75:
-                self.data['critics']['totals']['mixed'] = \
-                    self.data['critics']['totals'].get('mixed', 0) + 1
+                self.critic_reviews['totals']['mixed'] = \
+                    self.critic_reviews['totals'].get('mixed', 0) + 1
             else: 
-                 self.data['critics']['totals']['positive'] = \
-                     self.data['critics']['totals'].get('positive', 0) + 1
-            self.data['critics']['totals']['num_of_reviews'] = \
-                self.data['critics']['totals'].get('num_of_reviews', 0) + 1
+                 self.critic_reviews['totals']['positive'] = \
+                     self.critic_reviews['totals'].get('positive', 0) + 1
+            self.critic_reviews['totals']['num_of_reviews'] = \
+                self.critic_reviews['totals'].get('num_of_reviews', 0) + 1
                 
     #standard __repr__ method
     def __repr__(self):
@@ -234,8 +234,10 @@ class PyGameCritic():
 if __name__ == '__main__':
     #set pool to 1 to test if script pulls all reviews.
     try:
-        PyGameCritic(input('Enter the console:').strip()
+        print(PyGameCritic(input('Enter the console:').strip()
                             ,input('Enter the game:').strip().lower())
+                            .critic_reviews['totals'])
+
     except Exception as e:
         raise Exception(
             "Ran into an error, most likely mispelled console or game title",
