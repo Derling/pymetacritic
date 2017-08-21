@@ -187,8 +187,8 @@ class PyGameCritic():
         #0-4 negative(red), 5-7 mixed(yellow),8-10 positive(green) 
         for _id in self.user_reviews :
             #Skip the average and totals key, as they do not contain reviews.
-            if _id == 'average' or _id == 'totals':#skip through these keys
-                continue                           #as they are not reviews
+            if _id == 'average' or _id == 'totals':
+                continue                           
             rating = int(self.user_reviews[_id]['score'])
             self.user_reviews['totals'][rating] = \
                 self.user_reviews['totals'].get(rating, 0) + 1
@@ -207,9 +207,11 @@ class PyGameCritic():
     #calculate the toatl number of times x rating occurs for critics
     def criticTotals(self):
         self.critic_reviews['totals'] = {}
+        #0-49 negative(red),50-74 mixed(yellow), 75-100 positive(green)
         for _id in self.critic_reviews:
-            if _id == 'average' or _id == 'totals':#skip through these keys as
-                continue                           #they are not reviews
+            #Skip the average and totals key, as they do not contain reviews.
+            if _id == 'average' or _id == 'totals':
+                continue                           
             rating = int(self.critic_reviews[_id]['score'])
             self.critic_reviews['totals'][rating] = \
                 self.critic_reviews['totals'].get(rating, 0) + 1
