@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from metacritic import PyGameCritic as pgn
-import logging
 import matplotlib.pyplot as plt 
 
 
