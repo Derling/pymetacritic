@@ -1,31 +1,43 @@
 #!/usr/bin/env python3
-from metacritic import PyGameCritic as pgn
 import matplotlib.pyplot as plt 
+from metacritic import PyGameCritic as pgn
 
+CONSOLES = [ #Current generation of consoles supported on Metacritic.com
+    'Playstation 4',
+    'Xbox One',
+    'Pc',
+    'Switch',
+    'Wii U',
+    '3ds',
+	 'Playstation Vita',
+    'Ios',
+    'Legacy'
+]
 
-#Module for generating bar graphs comparing the metacritic scores of a game
-#accross multiple consoles. 
-
-#Current generation of consoles, also only ones supported on metacritic.com
-CONSOLES = ['Playstation 4','Xbox One','Pc','Switch','Wii U','3ds',
-				'Playstation Vita','Ios','Legacy']
 
 class MetaGraphs():
     def __init__(self, game, critics=True, users=True, pool=True, reviews=False):
         self.data = []
-        for console in CONSOLES:
-            #Check what consoles the game was released on.
+        for console in CONSOLES: 
             try: 
-                self.data.append(pgn.PyGameCritic(console, game.title(), 
-                                        critics, users, pool, reviews))
+                self.data.append(
+                        pgn.PyGameCritic(
+                                console, 
+                                game.title(), 
+                                critics, 
+                                users, 
+                                pool, 
+                                reviews
+                                )
+                        )
             except Exception as e:
                 pass
-        self.figure, self.axes = plt.subplots(len(self.data),2)
+        self.figure, self.axes = plt.subplots(len(self.data), 2)
         self.set_up_user_graphs()
+        ''' add these into last setp up function later'''
         plt.tight_layout()
         plt.suptitle(game.title())
         plt.subplots_adjust(wspace=.5, top=.9)
-        self.figure.savefig('{0}-results.png'.format(game))
         plt.show()
         
     def set_up_user_graphs(self):
