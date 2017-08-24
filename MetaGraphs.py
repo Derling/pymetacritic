@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import matplotlib.pyplot as plt 
-from metacritic import PyGameCritic as pgn
+from metacritic import pygamecritic as pgn
 
 CONSOLES = [ #Current generation of consoles supported on Metacritic.com
     'Playstation 4',
@@ -30,11 +30,11 @@ class MetaGraphs():
                                 reviews
                                 )
                         )
-            except Exception as e:
+            except:
                 pass
+        ''' add these into last set up function later'''
         self.figure, self.axes = plt.subplots(len(self.data), 2)
         self.set_up_user_graphs()
-        ''' add these into last setp up function later'''
         plt.tight_layout()
         plt.suptitle(game.title())
         plt.subplots_adjust(wspace=.5, top=.9)
@@ -53,7 +53,7 @@ class MetaGraphs():
             self.axes[ax, 0].set_xticks(range(0,11))
             y_tick_range = max(y) + 10 - max(y) % 10
             self.axes[ax, 0].set_yticks(range(0, y_tick_range, int(y_tick_range/5)))
-            self.axes[ax, 0].set_xlabel('Rating',fontsize=10)
+            self.axes[ax, 0].set_xlabel('Rating', fontsize=10)
             self.axes[ax, 0].legend()
             
 if __name__ == '__main__':

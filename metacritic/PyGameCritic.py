@@ -51,7 +51,7 @@ class PyGameCritic():
     
     def get_user_reviews(self, url, page=0):
         req = Request(
-                url + '/user-reviews?page=' + str(page). 
+                url + '/user-reviews?page=' + str(page),
                 headers={'User-Agent': 'Mozilla/5.0'}
                 )
         html_doc = urlopen(req).read()
@@ -294,7 +294,6 @@ class PyGameCritic():
                 self.user_reviews['summary']['num_of_reviews'],
                 self.critic_reviews['summary']['num_of_reviews']
                 )
-        
         
 if __name__ == '__main__':
     try:

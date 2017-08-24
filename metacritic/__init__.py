@@ -1,1 +1,1 @@
-from metacritic import PyGameCritic
+from metacritic import pygamecritic
