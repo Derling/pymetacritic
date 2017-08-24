@@ -1,3 +1,3 @@
 # pygamecritic
-Still in development
-Wen scraper for pulling gaming review scores from metacritic. Aim to analyze data using matplotlib.pyplot.
+Still in developmentWeb<br/>
+Web scraper for pulling gaming review scores from metacritic. Aim to analyze data using matplotlib.pyplot.
