@@ -14,7 +14,6 @@ CONSOLES = [ #Current generation of consoles supported on Metacritic.com
     'Legacy'
 ]
 
-
 class MetaGraphs():
     def __init__(self, game, critics=True, users=True, pool=True, reviews=False):
         self.data = []
@@ -49,7 +48,7 @@ class MetaGraphs():
                 x.append(score)
                 y.append(user_data[score])
             ''' change colors later '''
-            self.axes[ax, 0].bar(x,y,color='red',label=self.data[ax].console)
+            self.axes[ax, 0].bar(x, y, color='red', label=self.data[ax].console)
             self.axes[ax, 0].set_xticks(range(0,11))
             y_tick_range = max(y) + 10 - max(y) % 10
             self.axes[ax, 0].set_yticks(range(0, y_tick_range, int(y_tick_range/5)))
