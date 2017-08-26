@@ -15,6 +15,7 @@ CONSOLES = { #curent generation of consoles and their colors for graphing
     }
 
 class MetaGraphs():
+    
     def __init__(self, game, critics=True, users=True, pool=True, reviews=False):
         self.data = []
         self.game = game.title()
@@ -89,7 +90,7 @@ class MetaGraphs():
     def format_critics(self,data):
         # instantiate a dictionary with keys 0-10 and values 0
         r_value = dict(zip(range(0,11), [0] * 10))
-        for key in data:
+        for key in data:# make critic scores single digit. 
             r_value[int(key/10)] = r_value.get(int(key/10),0) + data[key]
         return r_value
             
