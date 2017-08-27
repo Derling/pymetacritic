@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
     To grab the content of all reviews enter reviews=True
 ''' 
 
+
 class PyGameCritic():
     
     def __init__(self, console, game, critics=True, users=True, pool=True, reviews=False):
