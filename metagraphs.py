@@ -45,8 +45,10 @@ class MetaGraphs():
     def init_graphs(self):
         if self.data:
             self.figure, self.axes = plt.subplots(len(self.data), 2)
-            self.set_up_user_graphs()
-            self.set_up_critic_graphs()
+            if self.users:
+                self.set_up_user_graphs()
+            if self.critics:
+                self.set_up_critic_graphs()
             plt.tight_layout()
             plt.suptitle(self.game)
             plt.subplots_adjust(wspace=.5, top=.9)
