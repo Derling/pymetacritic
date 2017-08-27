@@ -3,24 +3,10 @@ from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 
 ''' 
-    Testing proved a bit buggy, after multiple tests and lots of html reviews,
-    I have concluded that some of metacritics reviews get pulled from the site.
-    Many of the pulled reviews are actually critic reviews, not user reviews.
-    My tests have confirmed this because they always produce the correct number
-    of user reviews stated on the game's metacritic summary site.
-    Due to this discovery, many of the sites numbers are inaccurate. 
-    ie, the fourth review for the pc version of the witcher 3 the wild hunt is
-    a blank review, used as padding it seems for some reason. To test this 
-    enter pc as the console and "the witcher 3 the wild hunt" as the game.
-    Check the site's html here: 
-    http://www.metacritic.com/game/pc/the-witcher-3-wild-hunt/critic-reviews.
-    It is in plain view that the fourth list item is an empty div with the
-    style of the actual reviews with content. 
-    Another factor that may contribute to the site's wrong numbers is that there
-    are a few reviews(mainly critic reviews) that have not been published. 
-    In my script I only consider reviews that have been graded. When tested 
-    against games that have no unpublished rerviews and no removed reviews, 
-    script works as intended.
+    To only grab critic reviews enter users=False as a parameter
+    To only grab user reviews enter critics=False as a parameter
+    To only pull one page worth of reviews enter pool=False
+    To grab the content of all reviews enter reviews=True
 ''' 
 
 class PyGameCritic():
