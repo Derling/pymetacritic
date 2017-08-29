@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt 
 from metacritic import pygamecritic as pgn
 
-CONSOLES = { #curent generation of consoles and their colors for graphing 
+CONSOLES = { # consoles on metacritic and colors for graphs
         'Playstation 4' : '#003597',
         'Xbox One' : '#00971F',
         'Pc' : '#00B2FF',
@@ -11,7 +11,10 @@ CONSOLES = { #curent generation of consoles and their colors for graphing
         '3ds' : '#FF0000',
         'Playstation Vita' : '#001C5A',
         'Ios' : '#B11D4F',
-        'Legacy' : '#88008C'
+        'Legacy' : '#88008C',
+        'Playstation 3': '#00246B',
+        'Xbox 360' : '#004B12',
+
     }
 
 class MetaGraphs():
@@ -51,7 +54,7 @@ class MetaGraphs():
                 self.set_up_critic_graphs()
             plt.tight_layout()
             plt.suptitle(self.game)
-            plt.subplots_adjust(wspace=.5, top=.9)
+            plt.subplots_adjust(hspace=.5, wspace=.5, top=.9)
             plt.show()
         
     def set_up_critic_graphs(self):
