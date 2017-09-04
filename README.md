@@ -1,6 +1,9 @@
 # pygamecritic
 Python Api for retrieving critic and user scores from metacritic. Only meant to for viewing reviews for video game entries. 
 
+## prerequisites 
+BeautifulSoup.
+
 ## Usage
 ```python
 import metagraphs as mg
