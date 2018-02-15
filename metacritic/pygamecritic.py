@@ -131,8 +131,8 @@ class PyGameCritic():
 
     def get_critic_scores(self):
         # return the number of times the game was given a certain score by critics
-        if self.ritics:
-            return Counter([self.critic_reviews[name]['score'] for name in self.user_reviews])
+        if self.critics:
+            return Counter([self.critic_reviews[name]['score'] for name in self.critic_reviews])
         return None
 
     def get_critic_average(self):
@@ -155,5 +155,7 @@ class PyGameCritic():
 
 
 if __name__ == '__main__':
-    x = PyGameCritic(media='game',title='bloodborne', platform='playstation 4')
-    print(x)
+    x = PyGameCritic(media='tv',title='game of thrones',)
+    critic, user = x.get_critic_scores(), x.get_user_scores()
+    a, b = sum([critic[i] for i in critic]), sum([user[j] for j in user])
+    print(f'critic: {a}, user: {b}')
