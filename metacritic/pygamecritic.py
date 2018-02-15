@@ -1,44 +1,32 @@
 #!/usr/bin/env python3
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
+from querydata import QueryData
 from collections import namedtuple, Counter
 
-'''
-    critics field used to determine whether to pull critic data or not
-    users field used to determine whether to pull user data or not
-
-'''
 
 MetaData = namedtuple('MetaData', ['review', 'score',])
 
 class PyGameCritic():
-    def __init__(self, console, game, critics=True, users=True, pool=True, reviews=False):
+    def __init__(self, media='', title='', platform='', critics=True, users=True, pool=True, reviews=False):
         self.user_reviews = {}
         self.critic_reviews = {}
         self.critics = critics
         self.users = users
         self.pool = pool
-        self.console = console
-        self.game = game
+        self.query_data = QueryData(media, platform, title)
         self.reviews = reviews
         self.__get_all_metacritic_data()
 
-    def __get_all_metacritic_data(self): 
-        url = 'http://www.metacritic.com/game/{0}/{1}'.format(
-                    self.console.lower().replace(' ','-'),
-                    self.game.lower().replace(' ','-')
-                    )
+    def __get_all_metacritic_data(self):
         if self.critics: 
-            self.__get_critic_reviews(url)
+            self.__get_critic_reviews()
         if self.users: 
-            self.__get_user_reviews(url)
+            self.__get_user_reviews()
     
-    def __get_user_reviews(self, url, page=0):
-        req = Request(
-                url + '/user-reviews?page=' + str(page),
-                headers={'User-Agent': 'Mozilla/5.0'}
-                )
-
+    def __get_user_reviews(self, page=0):
+        req = Request(self.get_url() + '/user-reviews?page=' + str(page),
+                headers={'User-Agent': 'Mozilla/5.0'})
         html_doc = urlopen(req).read()
         soup = BeautifulSoup(html_doc,'lxml')
         ol = soup.find('ol', {'class':'reviews user_reviews'})
@@ -71,14 +59,12 @@ class PyGameCritic():
 
         if (self.pool and 
                 soup.find('a', {'class':'action','rel':'next'}, href=True)):
-            self.get_user_reviews(url, page+1) # if pool recursively get all reviews from following page
+            self.__get_user_reviews(page+1) # if pool recursively get all reviews from next page
 
 
-    def __get_critic_reviews(self, url, page=0):
-        req = Request(
-                url + '/critic-reviews?page=' + str(page),
-                headers={'user-Agent': 'Mozilla/5.0'}
-                )
+    def __get_critic_reviews(self, page=0):
+        req = Request(self.get_url() + '/critic-reviews?page=' + str(page),
+                headers={'user-Agent': 'Mozilla/5.0'})
         html_doc = urlopen(req).read()
         soup = BeautifulSoup(html_doc,'lxml')
         ol = soup.find('ol',{'class':'reviews critic_reviews'})
@@ -99,7 +85,7 @@ class PyGameCritic():
             self.critic_reviews[name] = {k: v for k, v in review_data._asdict().items() if v != None}
 
         
-        if critic_elements: # 
+        if critic_elements: # more than 2 reviews
             for critic_review in critic_elements:
             	name, review_data = self.__parse_tag(critic_review)
             	self.critic_reviews[name] = {k: v for k, v in review_data._asdict().items() if v}
@@ -108,45 +94,10 @@ class PyGameCritic():
         	name, review_data = self.__parse_tag(soup.find(
         		'li', {'class':'review critic_review last_review'}))
         	self.critic_reviews[name] = {k: v for k, v in review_data._asdict().items() if v != None}
-
-        
             
         if (self.pool and 
             soup.find('a', {'class':'action','rel':'next'}, href=True)):
-            self.get_user_reviews(url, page+1) # recursively get all reviews
-        return self.critic_reviews
-
-    def get_user_scores(self):
-    	# return the number of times the game was given a certain score by users
-    	if self.users:
-    		return Counter([self.user_reviews[name]['score'] for name in self.user_reviews])
-    	return None
-
-    def get_user_average(self):
-    	# return the average of all the user scores
-    	if self.users:
-    		n = total = 0
-    		for name in self.user_reviews:
-    			total += int(self.user_reviews[name]['score'])
-    			n += 1
-    		return round(total/n, 1) # round to the tenth digit
-    	return None
-
-    def get_critic_scores(self):
-    	# return the number of times the game was given a certain score by critics
-    	if self.ritics:
-    		return Counter([self.critic_reviews[name]['score'] for name in self.user_reviews])
-    	return None
-
-    def get_critic_average(self):
-    	# return the average of all the critic scores
-    	if self.critics:
-    		n = total = 0
-    		for name in self.critic_reviews:
-    			total += int(self.critic_reviews[name]['score'])
-    			n += 1
-    		return round(total/n, 1) # round to the tenth digit
-    	return None
+            self.__get_user_reviews(page+1) # if pool recursively get all reviews from next page
 
     def __parse_tag(self, tag):
     	# extracts critic or user name and their review(if needed) and score
@@ -157,31 +108,52 @@ class PyGameCritic():
         )
                 
     def __repr__(self):
-    	# class instance representation
-        return 'PyGameCritic("{0}", "{1}", critics={2},users={3}, pool={4},'\
-                ' reviews={5})'.format(
-                            self.console,
-                            self.game,
-                            self.critics,
-                            self.users,
-                            self.pool,
-                            self.reviews
-                            )
+    	# standard __repr__ method *** Looks sloopy fix later ***
+        qd = self.get_query_data()
+        return f'PyGameCritic(media={qd.media}, title={qd.title}, platform={qd.platform}, ' \
+               + f'critics={self.critics}, users={self.users}, pool={self.pool}, reviews={self.reviews}'
     
-    def __str__(self):
-        # NEED TO CREATE __str__ method
-        return ''
-        
+    def get_user_scores(self):
+        # return the number of times the game was given a certain score by users
+        if self.users:
+            return Counter([self.user_reviews[name]['score'] for name in self.user_reviews])
+        return None
+
+    def get_user_average(self):
+        # return the average of all the user scores
+        if self.users:
+            n = total = 0
+            for name in self.user_reviews:
+                total += int(self.user_reviews[name]['score'])
+                n += 1
+            return round(total/n, 1) # round to the tenth digit
+        return None
+
+    def get_critic_scores(self):
+        # return the number of times the game was given a certain score by critics
+        if self.ritics:
+            return Counter([self.critic_reviews[name]['score'] for name in self.user_reviews])
+        return None
+
+    def get_critic_average(self):
+        # return the average of all the critic scores
+        if self.critics:
+            n = total = 0
+            for name in self.critic_reviews:
+                total += int(self.critic_reviews[name]['score'])
+                n += 1
+            return round(total/n, 1) # round to the tenth digit
+        return None
+
+    def get_url(self):
+        # return the url being used to gather information
+        return self.query_data.url
+    
+    def get_query_data(self):
+        # return the wrapper class for storing query information
+        return self.query_data
+
+
 if __name__ == '__main__':
-    try:
-        x = PyGameCritic(
-                input('Enter the console:').strip(),
-                input('Enter the game:').strip(), 
-            	pool=False, reviews=True
-                )
-    except Exception as e:
-        raise Exception(
-            'Ran into an error, most likely mispelled console or game title',
-            ' System error :',
-            e
-            )
+    x = PyGameCritic(media='game',title='bloodborne', platform='playstation 4')
+    print(x)
