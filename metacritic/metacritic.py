@@ -7,7 +7,11 @@ from collections import namedtuple, Counter
 
 MetaData = namedtuple('MetaData', ['review', 'score',])
 
-class PyGameCritic():
+REQUEST_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+}
+
+class MetaCritic():
     def __init__(self, media='', title='', platform='', critics=True, users=True, pool=True, reviews=False):
         self.user_reviews = {}
         self.critic_reviews = {}
@@ -26,7 +30,7 @@ class PyGameCritic():
     
     def __get_user_reviews(self, page=0):
         req = Request(self.get_url() + '/user-reviews?page=' + str(page),
-                headers={'User-Agent': 'Mozilla/5.0'})
+                headers=REQUEST_HEADERS)
         html_doc = urlopen(req).read()
         soup = BeautifulSoup(html_doc,'lxml')
         ol = soup.find('ol', {'class':'reviews user_reviews'})
@@ -64,7 +68,7 @@ class PyGameCritic():
 
     def __get_critic_reviews(self, page=0):
         req = Request(self.get_url() + '/critic-reviews?page=' + str(page),
-                headers={'user-Agent': 'Mozilla/5.0'})
+                headers=REQUEST_HEADERS)
         html_doc = urlopen(req).read()
         soup = BeautifulSoup(html_doc,'lxml')
         ol = soup.find('ol',{'class':'reviews critic_reviews'})
@@ -155,7 +159,7 @@ class PyGameCritic():
 
 
 if __name__ == '__main__':
-    x = PyGameCritic(media='tv',title='game of thrones',)
+    x = MetaCritic(media='tv',title='game of thrones',)
     critic, user = x.get_critic_scores(), x.get_user_scores()
     a, b = sum([critic[i] for i in critic]), sum([user[j] for j in user])
     print(f'critic: {a}, user: {b}')
