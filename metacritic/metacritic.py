@@ -175,4 +175,4 @@ class QueryData:
 
 	def __repr__(self):
 		# standard __repr__ function
-		return f'QueryData({self.media}, {self.title}, {self.platform})'
+		return f'QueryData({self.media}, {self.platform}, {self.title})'
