@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
-from querydata import QueryData
 from collections import namedtuple, Counter
 
 
 MetaData = namedtuple('MetaData', ['review', 'score',])
+
+BASE_URL = 'http://www.metacritic.com'
 
 REQUEST_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
@@ -158,8 +159,20 @@ class MetaCritic():
         return self.query_data
 
 
-if __name__ == '__main__':
-    x = MetaCritic(media='tv',title='game of thrones',)
-    critic, user = x.get_critic_scores(), x.get_user_scores()
-    a, b = sum([critic[i] for i in critic]), sum([user[j] for j in user])
-    print(f'critic: {a}, user: {b}')
+def _format_url(*args):
+	# format url components to fit the metacritic endpoints
+	# i.e http://www.metacritic.com/game/playstation-4/bloodborne
+	return '/'.join(iter(args)).replace(' ', '-')
+
+class QueryData:
+    # helper class for holding information about the item being looked up
+	def __init__(self, media, platform, title):
+		# store parameters and generate url
+		self.media = media
+		self.platform = platform
+		self.title = title
+		self.url = _format_url(BASE_URL, media, platform, title)
+
+	def __repr__(self):
+		# standard __repr__ function
+		return f'QueryData({self.media}, {self.title}, {self.platform})'
