@@ -1,23 +1,25 @@
-# pygamecritic
-Python Api for retrieving critic and user scores from metacritic. Only meant to for viewing reviews for video game entries. 
+# PyMetaCritic
+Python Api for retrieving critic and user scores from metacritic
 
-## prerequisites 
-BeautifulSoup.
-
-## Usage
+## Installation
+First, clone this repository using [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) </br>
+`
+git clone https://github.com/Derling/pymetacritic
+`</br>
+**Make sure [Python 3](https://www.python.org/downloads/) is installed on your system** </br>
+Secondly, install the dependencies, **I recommend creating and using a [virtualenv](https://help.dreamhost.com/hc/en-us/articles/115000695551-Installing-and-using-Python-s-virtualenv-using-Python-3) before this step**</br>
+*open a terminal and cd into the repositories root folder*
 ```python
-import metagraphs as mg
-
-metacritic = mg.MetaGraphs('the witcher 3 wild hunt') # main argument is the game name
+pip install -r requirement.txt
 ```
 
-### Secondary Module
+### Usage
 
+You can create a file in the same directory as this project and imoprt it as if it were a package
 ```python
-from metacritic import pygamecritic as pgn
+from metacritic import MetaCritic as mc
 
-metacritic = pgn.PyGameCritic('pc','xcom 2') # main arguments are the console and game.
-metacritic.user_reviews # all user reviews 
-metacritic.critic_reviews # all critic reviews 
-print(metacritic) # formatted string representing the total number of reviews for a given game on a given console.
+mc_data = mc.MetaCritic('tv', 'game of thrones')
+print(mc_data.user_reviews) # all user reviews
+print(mc_data.critic_reviews) # all critic reviews
 ```
