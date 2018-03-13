@@ -159,7 +159,7 @@ class MetaCritic():
         return self.query_data
 
 
-def __format_url(*args):
+def format_url(*args):
 	# format url components to fit the metacritic endpoints
 	# i.e http://www.metacritic.com/game/playstation-4/bloodborne
 	return '/'.join(iter(args)).replace(' ', '-')
@@ -171,7 +171,7 @@ class QueryData:
 		self.media = media
 		self.platform = platform
 		self.title = title
-		self.url = __format_url(BASE_URL, media, platform, title)
+		self.url = format_url(BASE_URL, media, platform, title)
 
 	def __repr__(self):
 		# standard __repr__ function
