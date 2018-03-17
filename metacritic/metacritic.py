@@ -2,7 +2,7 @@
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 from collections import namedtuple, Counter
-from querydata import QueryData
+from . import querydata as QD
 
 MetaData = namedtuple('MetaData', ['review', 'score',])
 
@@ -19,7 +19,7 @@ class MetaCritic():
         self.critics = critics
         self.users = users
         self.pool = pool
-        self.query_data = QueryData(media, platform, title)
+        self.query_data = QD.QueryData(media, platform, title)
         self.reviews = reviews
         self.__get_all_metacritic_data()
 
