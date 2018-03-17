@@ -1,0 +1,1 @@
+import querydata # wrapper class for query information
