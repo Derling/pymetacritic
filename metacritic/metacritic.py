@@ -2,7 +2,7 @@
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 from collections import namedtuple, Counter
-
+from querydata import QueryData
 
 MetaData = namedtuple('MetaData', ['review', 'score',])
 
@@ -157,22 +157,3 @@ class MetaCritic():
     def get_query_data(self):
         # return the wrapper class for storing query information
         return self.query_data
-
-
-def format_url(*args):
-	# format url components to fit the metacritic endpoints
-	# i.e http://www.metacritic.com/game/playstation-4/bloodborne
-	return '/'.join(iter(args)).replace(' ', '-')
-
-class QueryData:
-    # helper class for holding information about the item being looked up
-	def __init__(self, media, platform, title):
-		# store parameters and generate url
-		self.media = media
-		self.platform = platform
-		self.title = title
-		self.url = format_url(BASE_URL, media, platform, title)
-
-	def __repr__(self):
-		# standard __repr__ function
-		return f'QueryData({self.media}, {self.platform}, {self.title})'
