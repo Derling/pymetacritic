@@ -2,7 +2,14 @@
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 from collections import namedtuple, Counter
-from . import querydata as QD
+
+try: # import wrapper module
+    from . import querydata as QD # relative import
+except ImportError:
+    try:
+        import querydata as QD # absolute import
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError # no querydata file, throw error
 
 MetaData = namedtuple('MetaData', ['review', 'score',])
 
@@ -116,7 +123,7 @@ class MetaCritic():
     	# standard __repr__ method *** Looks sloopy fix later ***
         qd = self.get_query_data()
         return f'PyGameCritic(media={qd.media}, title={qd.title}, platform={qd.platform}, ' \
-               + f'critics={self.critics}, users={self.users}, pool={self.pool}, reviews={self.reviews}'
+               + f'critics={self.critics}, users={self.users}, pool={self.pool}, reviews={self.reviews})'
     
     def get_user_scores(self):
         # return the number of times the game was given a certain score by users
