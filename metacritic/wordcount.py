@@ -44,20 +44,20 @@ class MetaCritic():
 
     def __get_all_metacritic_data(self):
         if self.critics: 
-            self.__get_critic_reviews()
+            self.__get_reviews()
         if self.users: 
-            self.__get_user_reviews()
+            self.__get_reviews(client='critic')
     
-    def __get_user_reviews(self, page=0):
-        req = Request(self.get_url() + '/user-reviews?page=' + str(page),
-                headers=REQUEST_HEADERS)
+    def __get_reviews(self, client='user', page=0):
+        url = self.get_url() + f'/{client}-reviews?page=' + str(page)
+        req = Request(url, headers=REQUEST_HEADERS)
         html_doc = urlopen(req).read()
         soup = BeautifulSoup(html_doc,'lxml')
         ol = soup.find('ol', {'class':'reviews user_reviews'})
 
-        user_reviews = None
+        reviews = None
         if ol:
-            user_reviews = ol.find_all('li',{'class':'review user_review'})
+            reviews = ol.find_all('li',{'class':'review user_review'})
 
         if soup.find(
              'li', {'class':'review user_review first_review last_review'}): # only one review on current page
@@ -66,7 +66,7 @@ class MetaCritic():
             for word in get_words(review_content):
                 if word.casefold() in sw.WORDS:
                     continue
-                self.user_words[word] += 1
+                getattr(self, f'{client}_words')[word] += 1
 
 
         if soup.find('li',{'class':'review user_review first_review'}): # get first review on current page
@@ -75,16 +75,16 @@ class MetaCritic():
             for word in get_words(review_content):
                 if word.casefold() in sw.WORDS:
                     continue
-                self.user_words[word] += 1
+                getattr(self, f'{client}_words')[word] += 1
                 
 
-        if user_reviews: # reviews between first and last review
-            for user_review in user_reviews:
-                review_content = self.__parse_tag(user_review)
+        if reviews: # reviews between first and last review
+            for review in reviews:
+                review_content = self.__parse_tag(review)
                 for word in get_words(review_content):
                     if word.casefold() in sw.WORDS:
                         continue
-                    self.user_words[word] += 1
+                    getattr(self, f'{client}_words')[word] += 1
                 
         if soup.find('li', {'class':'review user_review last_review'}): # get last review on current page
             review_content = self.__parse_tag(
@@ -92,61 +92,13 @@ class MetaCritic():
             for word in get_words(review_content):
                 if word.casefold() in sw.WORDS:
                     continue
-                self.user_words[word] += 1
+                getattr(self, f'{client}_words')[word] += 1
 
         if (self.pool and 
                 soup.find('a', {'class':'action','rel':'next'}, href=True)):
-            self.__get_user_reviews(page+1) # if pool recursively get all reviews from next page
+            self.__get_reviews(client, page+1) # if pool recursively get all reviews from next page
 
 
-    def __get_critic_reviews(self, page=0):
-        req = Request(self.get_url() + '/critic-reviews?page=' + str(page),
-                headers=REQUEST_HEADERS)
-        html_doc = urlopen(req).read()
-        soup = BeautifulSoup(html_doc,'lxml')
-        ol = soup.find('ol',{'class':'reviews critic_reviews'})
-        critic_elements = None
-
-        if ol:
-            critic_elements = ol.find_all('li', {'class':'review critic_review'})
-
-        if soup.find(
-              'li', {'class':'review critic_review first_review last_review'}): # only one review on current page
-            review_content = self.__parse_tag(soup.find(
-        		'li', {'class':'review critic_review first_review last_review'}))
-            for word in get_words(review_content):
-                if word.casefold() in sw.WORDS:
-                    continue
-                self.critic_words[word] += 1
-
-        if soup.find('li',{'class':'review critic_review first_review'}): # get first review on current page
-            review_content = self.__parse_tag(soup.find(
-        		'li', {'class':'review critic_review first_review'}))
-            for word in get_words(review_content):
-                if word.casefold() in sw.WORDS:
-                    continue
-                self.critic_words[word] += 1
-
-        
-        if critic_elements: # more than 2 reviews
-            for critic_review in critic_elements:
-                review_content = self.__parse_tag(critic_review)
-                for word in get_words(review_content):
-                    if word.casefold() in sw.WORDS:
-                        continue
-                    self.critic_words[word] += 1
-
-        if soup.find('li',{'class':'review critic_review last_review'}): # get last review on current page
-            review_content = self.__parse_tag(soup.find(
-                    'li', {'class':'review critic_review last_review'}))
-            for word in get_words(review_content):
-                if word.casefold() in sw.WORDS:
-                    continue
-                self.critic_words[word] += 1
-            
-        if (self.pool and 
-            soup.find('a', {'class':'action','rel':'next'}, href=True)):
-            self.__get_user_reviews(page+1) # if pool recursively get all reviews from next page
 
     def __parse_tag(self, tag):
     	# extract the content of the review
