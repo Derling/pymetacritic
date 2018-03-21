@@ -16,4 +16,4 @@ class QueryData:
 def format_url(*args):
 	# format url components to fit the metacritic endpoints
 	# i.e http://www.metacritic.com/game/playstation-4/bloodborne
-	return '/'.join(iter(args)).replace(' ', '-')
+	return '/'.join([arg for arg in iter(args) if arg]).replace(' ', '-')
