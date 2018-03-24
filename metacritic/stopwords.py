@@ -1,5 +1,7 @@
+# set of common stop words
 WORDS = {
      '',
+     '»',
      'a',
      'about',
      'above',
@@ -46,12 +48,14 @@ WORDS = {
      "doesn't",
      'doing',
      "don't",
+     'dont',
      'down',
      'during',
      'e',
      'each',
      'even',
      'except',
+     'expand',
      'f',
      'few',
      'find',
