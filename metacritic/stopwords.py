@@ -1,5 +1,5 @@
 # set of common stop words
-WORDS = {
+STOP_WORDS = {
      '',
      '»',
      'a',
@@ -109,6 +109,7 @@ WORDS = {
      'k',
      'know',
      'l',
+     'll',
      "let's",
      'like',
      'look',
@@ -152,6 +153,8 @@ WORDS = {
      'put',
      'q',
      'r',
+     'review',
+     'reviews',
      's',
      'same',
      'say',
