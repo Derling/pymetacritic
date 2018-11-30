@@ -9,12 +9,34 @@ from .stopwords import STOP_WORDS
 
 
 class MetaCriticParserBase:
+    """Base Metacritic Parser class
+
+    This class should never be instantiated, it should be used to derive new classes
+
+    Args: 
+        METACRITIC_URL(str): metacritic host url
+        USER_AGENT(str): user agent string that is passed when making a request to the metacritic server
+        user_reviews(int): the number of user reviews that have been processed
+        critic_reviews(int): the number of critic reviews that have been processed
+    """
 
     METACRITIC_URL = "https://www.metacritic.com"
     USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:63.0) Gecko/20100101 Firefox/63.0'
 
+    def __init__(self):
+        self.user_reviews = 0
+        self.critic_reviews = 0
 
     def get_all_review_word_counts(self, users=True, critics=True):
+        """Retrieves all the words that get used by reviewers for an article on Metacritic
+
+        Args:
+            users(boolean): A flag used to determine whether or not user review data should get parsed
+            critics(boolean): A flag used to determine whether or not critic review data should get parsed
+
+        Returns:
+            A dictionary with data about the most commonly used words for an article on Metacritic
+        """
         self.user_reviews = 0
         self.critic_reviews = 0
         url = self.get_url()
@@ -32,6 +54,15 @@ class MetaCriticParserBase:
 
 
     def get_words(self, review):
+        """Retrieve an array of words used in the body of a review(drops common stop words)
+
+        Args:
+            review(str): the body of a review posted by a user on Metacritic
+
+        Return:
+            A list of words that were used in the review
+
+        """
         regex = '\\b\\w+\\b'
         words = []
 
@@ -44,6 +75,18 @@ class MetaCriticParserBase:
 
 
     def get_reviewers_word_count(self, url, reviewers, count=None, page=0):
+        """Recursively get the word count for a reviewer type
+
+        Args:
+            url(str): the url of the Metacritic article
+            reviewers(str): the reviewer type we want to parse(can either be user or critic)
+            count(collections.Counter) a Counter object denoting the current count of words
+            page(int): an integer to determine the page to parse on the website
+
+        Returns:
+            A collections.Counter object that determines the number of times a word
+            got used to describe a Metacritic article
+        """
         count = count or Counter()
         req = requests.get(url + f'/{reviewers}-reviews?page={page}', headers={'User-Agent': self.USER_AGENT})
         soup = BeautifulSoup(req.text, 'lxml')
@@ -62,10 +105,26 @@ class MetaCriticParserBase:
 
 
     def _page_has_more_reviews(self, soup):
+        """Determines whether or not the given html Metacritic doc links to another page with more reviews
+
+        Args:
+            soup(BeautifulSoup): a BeautifulSoup object that has been initialized with an html doc from Metacritic
+
+        Returns:
+            A boolean that determines whether or not there are more pages associated with the current html doc
+        """
         return bool(soup.find('a', {'class':'action','rel':'next'}, href=True))
 
 
     def _get_review_body(self, review_element):
+        """Returns the content of a review element
+
+        Args:
+            review_element(bs4.element.Tag): a bs4 element tag object
+
+        Returns:
+            The Body of a review
+        """
         review_body = review_element.find('div', {'class': 'review_body'})
 
         extended_body = review_body.find('span', {'class': 'blurb blurb_expanded'})
@@ -75,29 +134,29 @@ class MetaCriticParserBase:
         return review_body.getText()
 
 
-    def get_reviewer_meta_score(self, reviewer):
-        url = self.get_url()
-        req = requests.get(url, headers={'User-Agent': self.USER_AGENT})
-        soup = BeautifulSoup(req.text, 'lxml')
-
-        metascore = soup.find('a', {'class': 'metascore_w'}).getText()
-        return metascore
-
-
-
     def _update_reviewer_count(self, reviewer):
+        """Updates the number of reviews processed for users or critics
+
+        Args:
+            reviewer(str): the reviewer count to update
+        """
         attr = f'{reviewer}_reviews'
         setattr(self, attr, getattr(self, attr) + 1)
 
     def get__url(self):
-        # interface method subclasses must implement
-        # should return the url that gets used to make the request call
+        """Interface method derived classes must implement.
+
+        Should return the url that will get used to make the request
+        """
         raise NotImplemented
 
 
     def _get_reviews(soup, reviewer):
-        # each media type has differing ways of posting the reviews
-        # games use an ol while movies use a regular div
-        # derived class has to implement this themselves
+        """Interface method subclasses must implement.
+
+        Each media type has differing ways of posting the reviewes, ie
+        games use an ol while movies use a regular div. Derived classes must
+        overwrite this method with the correct way of getting the review elements.
+        """
         raise NotImplemented
 
