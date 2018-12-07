@@ -33,7 +33,7 @@ class GameParser(MetaCriticParserBase):
 	"""
 
 	def __init__(self, platform, game):
-		self._platform = platform
+		self._platform = platform.title()
 		self._metacritic_platform = self.PLATFORMS[platform] # TODO raise exception if unsopported platform is given
 		self._game = game
 		self._metacritic_name = self.format_title_name(game)
@@ -59,7 +59,7 @@ class GameParser(MetaCriticParserBase):
 	@game.setter
 	def game(self, new_game):
 		""" Setter method for the game attribute. """
-		self._game = new_game
+		self._game = new_game.title()
 		self._metacritic_name = self.format_title_name(new_game)
 
 	def get_url(self):
