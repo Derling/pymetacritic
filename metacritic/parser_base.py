@@ -9,7 +9,7 @@ from .stopwords import STOP_WORDS
 
 
 class MetaCriticParserBase:
-    """Base Metacritic Parser class
+    """ Base Metacritic Parser class
 
     This class should never be instantiated, it should be used to derive new classes
 
@@ -28,7 +28,7 @@ class MetaCriticParserBase:
         self.critic_reviews = 0
 
     def get_all_review_word_counts(self, users=True, critics=True):
-        """Retrieves all the words that get used by reviewers for an article on Metacritic
+        """ Retrieves all the words that get used by reviewers for an article on Metacritic
 
         Args:
             users(boolean): A flag used to determine whether or not user review data should get parsed
@@ -54,7 +54,7 @@ class MetaCriticParserBase:
 
 
     def get_words(self, review):
-        """Retrieve an array of words used in the body of a review(drops common stop words)
+        """ Retrieve an array of words used in the body of a review(drops common stop words)
 
         Args:
             review(str): the body of a review posted by a user on Metacritic
@@ -75,7 +75,7 @@ class MetaCriticParserBase:
 
 
     def get_reviewers_word_count(self, url, reviewers, count=None, page=0):
-        """Recursively get the word count for a reviewer type
+        """ Recursively get the word count for a reviewer type
 
         Args:
             url(str): the url of the Metacritic article
@@ -105,7 +105,7 @@ class MetaCriticParserBase:
 
 
     def _page_has_more_reviews(self, soup):
-        """Determines whether or not the given html Metacritic doc links to another page with more reviews
+        """ Determines whether or not the given html Metacritic doc links to another page with more reviews
 
         Args:
             soup(BeautifulSoup): a BeautifulSoup object that has been initialized with an html doc from Metacritic
@@ -117,7 +117,7 @@ class MetaCriticParserBase:
 
 
     def _get_review_body(self, review_element):
-        """Returns the content of a review element
+        """ Returns the content of a review element
 
         Args:
             review_element(bs4.element.Tag): a bs4 element tag object
@@ -135,7 +135,7 @@ class MetaCriticParserBase:
 
 
     def _update_reviewer_count(self, reviewer):
-        """Updates the number of reviews processed for users or critics
+        """ Updates the number of reviews processed for users or critics
 
         Args:
             reviewer(str): the reviewer count to update
@@ -157,7 +157,7 @@ class MetaCriticParserBase:
         return title.replace(' ', '-').lower()
 
     def get__url(self):
-        """Interface method derived classes must implement.
+        """ Interface method derived classes must implement.
 
         Should return the url that will get used to make the request
         """
@@ -165,7 +165,7 @@ class MetaCriticParserBase:
 
 
     def _get_reviews(soup, reviewer):
-        """Interface method subclasses must implement.
+        """ Interface method subclasses must implement.
 
         Each media type has differing ways of posting the reviewes, ie
         games use an ol while movies use a regular div. Derived classes must
