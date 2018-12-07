@@ -41,8 +41,7 @@ class GameParser(MetaCriticParserBase):
 
 
 	def get_url(self):
-		"""Returns the base url that will get used when making requests
-		"""
+		""" Returns the base url that will get used when making requests """
 		return '/'.join([self.METACRITIC_URL, 'game', f'{self.platform}', f'{self.title}'])
 
 
