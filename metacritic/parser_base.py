@@ -116,24 +116,6 @@ class MetaCriticParserBase:
         return bool(soup.find('a', {'class':'action','rel':'next'}, href=True))
 
 
-    def _get_review_body(self, review_element):
-        """ Returns the content of a review element
-
-        Args:
-            review_element(bs4.element.Tag): a bs4 element tag object
-
-        Returns:
-            The Body of a review
-        """
-        review_body = review_element.find('div', {'class': 'review_body'})
-
-        extended_body = review_body.find('span', {'class': 'blurb blurb_expanded'})
-        if bool(extended_body):
-            return extended_body.getText()
-
-        return review_body.getText()
-
-
     def _update_reviewer_count(self, reviewer):
         """ Updates the number of reviews processed for users or critics
 
@@ -156,6 +138,14 @@ class MetaCriticParserBase:
         """
         return title.replace(' ', '-').lower()
 
+
+    def _get_review_body(self, review_element):
+        """ Interface method derived classes must implement.
+
+        This method should parse a extract the contents of a review from a BS4 element tag
+        """
+        raise NotImplemented
+
     def get__url(self):
         """ Interface method derived classes must implement.
 
@@ -165,7 +155,7 @@ class MetaCriticParserBase:
 
 
     def _get_reviews(soup, reviewer):
-        """ Interface method subclasses must implement.
+        """ Interface method derived classes must implement.
 
         Each media type has differing ways of posting the reviewes, ie
         games use an ol while movies use a regular div. Derived classes must
