@@ -1,52 +1,74 @@
 from .parser_base import MetaCriticParserBase
 
 class GameParser(MetaCriticParserBase):
-	"""Metacritic parser for video games
+	# a map for the supported platforms and their metacritic alias
+	PLATFORMS = {
+		'PS4': 'playstation-4',
+		'Xbox One': 'xbox-one',
+		'PC': 'pc',
+		'Switch': 'switch',
+		'Wii U': 'wii-u',
+		'3DS': '3ds',
+		'PS Vita': 'playstation-vita',
+		'iOS': 'ios',
+		'PS3': 'playstation-3',
+		'PS2': 'playstation-2',
+		'PS': 'playstation',
+		'Xbox 360': 'xbox-360',
+		'Xbox': 'xbox',
+		'DS': 'ds',
+		'N64': 'nintendo-64',
+		'PSP': 'psp',
+		'Wii': 'wii',
+		'Gamecube': 'gamecube',
+		'Game Boy Advance': 'game-boy-advance',
+		'Dreamcast': 'dreamcast',
+
+	}
+	""" Metacritic parser for video games
 
 	Args:
 		platform(str): the platform the game was released on
-			supported platforms(followed by their Metacritic alias):
-				PS4(playstation-4),
-				Xbox One(xbox-one),
-				PC(pc),
-				Switch(switch),
-				Wii U(wii-u),
-				3DS(3ds)
-				PS Vita(playstation vita),
-				iOS(ios),
-				PS3(playstation-3),
-				PS2(playstation-2),
-				PS(playstation),
-				Xbox 360(xbox-360),
-				Xbox(xbox),
-				DS(ds),
-				N64(nintendo-64),
-				PSP(psp),
-				Wii(wii),
-				Gamecube(gamecube),
-				Game Boy Advance(game-boy-advance),
-				Dreamcast(dreamcast)
-		title(str): the title of the game
-			All title must be all lowercase with whitespace replaced by "-". Read Dead Redemption 2
-			should be passed in as red-dead-redemption-2
-
-	When instantiating a GameParser object the platform should be the Metacritic alias and not
-	the actual name of the platform. For example if the game was release on Xbox One, the platform
-	would be xbox-one.
+		game(str): the title of the game
 	"""
 
-	def __init__(self, platform, title):
-		self.platform = platform
-		self.title = title
+	def __init__(self, platform, game):
+		self._platform = platform
+		self._metacritic_platform = self.PLATFORMS[platform] # TODO raise exception if unsopported platform is given
+		self._game = game
+		self._metacritic_name = self.format_title_name(game)
 
+
+	@property
+	def platform(self):
+		""" Getter method for the platform attribute. """
+		return self._platform
+
+
+	@platform.setter
+	def platform(self, new_platform):
+		""" Setter method for the platform attribtue. """
+		self._platform = new_platform
+		self._metacritic_platform = self.PLATFORMS[new_platform] # TODO raise exception if unsopported platform is given
+	
+	@property
+	def game(self):
+		""" Getter method for the game attribute. """
+		return self._game
+
+	@game.setter
+	def game(self, new_game):
+		""" Setter method for the game attribute. """
+		self._game = new_game
+		self._metacritic_name = self.format_title_name(new_game)
 
 	def get_url(self):
 		""" Returns the base url that will get used when making requests """
-		return '/'.join([self.METACRITIC_URL, 'game', f'{self.platform}', f'{self.title}'])
+		return '/'.join([self.METACRITIC_URL, 'game', f'{self._metacritic_platform}', f'{self._metacritic_name}'])
 
 
 	def _get_reviews(self, soup, reviewer):
-		"""Get all the review elements for a given html doc
+		""" Get all the review elements for a given html doc
 
 		Args:
 			soup(BeautifulSoup): a BeautifulSoup object instantiated with the html doc for

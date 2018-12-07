@@ -143,6 +143,19 @@ class MetaCriticParserBase:
         attr = f'{reviewer}_reviews'
         setattr(self, attr, getattr(self, attr) + 1)
 
+
+    @staticmethod
+    def format_title_name(title):
+        """ Formats the title of an article 
+
+        Args:
+            title(str): the name of the article
+
+        Returns:
+            A string which can be used as part of the url to make a request
+        """
+        return title.replace(' ', '-').lower()
+
     def get__url(self):
         """Interface method derived classes must implement.
 
