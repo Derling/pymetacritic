@@ -136,7 +136,7 @@ class MetaCriticParserBase:
         Returns:
             A string which can be used as part of the url to make a request
         """
-        return title.replace(' ', '-').lower()
+        return title.replace(' ', '-').replace(':', '').lower()
 
 
     def _get_review_body(self, review_element):
