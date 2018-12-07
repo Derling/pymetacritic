@@ -67,6 +67,23 @@ class GameParser(MetaCriticParserBase):
 		return '/'.join([self.METACRITIC_URL, 'game', f'{self._metacritic_platform}', f'{self._metacritic_name}'])
 
 
+	def _get_review_body(self, review_element):
+		""" Returns the content of a review element
+
+		Args:
+			review_element(bs4.element.Tag): a bs4 element tag object
+
+		Returns:
+			The body of a review
+		"""
+		review_body = review_element.find('div', {'class': 'review_body'})
+
+		extended_body = review_body.find('span', {'class': 'blurb blurb_expanded'})
+		if bool(extended_body):
+			return extended_body.getText()
+
+		return review_body.getText()
+
 	def _get_reviews(self, soup, reviewer):
 		""" Get all the review elements for a given html doc
 
