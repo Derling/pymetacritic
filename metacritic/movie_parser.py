@@ -26,22 +26,11 @@ class MovieParser(MetaCriticParserBase):
 		return self._movie
 
 
-	@movie.setter
-	def movie(self, new_movie):
-		""" Setter method for the movie attribute. """
-		self._movie = new_movie.title()
-		self._metacritic_name = self.format_title_name(new_movie)
-
 	@property
 	def year(self):
 		""" Getter method for the year attribute. """
 		return _year
 
-
-	@year.setter
-	def year(self, new_year):
-		""" Setter method for the year attribute. """
-		self._year = new_year
 
 	def get_url(self):
 		""" Returns the base url that will get used when making requests """
