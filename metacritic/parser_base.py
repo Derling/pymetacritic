@@ -154,7 +154,7 @@ class MetaCriticParserBase:
         raise NotImplemented
 
 
-    def _get_reviews(soup, reviewer):
+    def _get_reviews(self, soup, reviewer):
         """ Interface method derived classes must implement.
 
         Each media type has differing ways of posting the reviewes, ie
