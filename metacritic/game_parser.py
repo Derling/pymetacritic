@@ -89,7 +89,7 @@ class GameParser(MetaCriticParserBase):
 		if not reviews_element:
 			return []
 
-		one_review_in_page = reviews_element.find('li', {'class':'review user_review first_review last_review'})
+		one_review_in_page = reviews_element.find('li', {'class': f'review {reviewer}_review first_review last_review'})
 		if one_review_in_page:
 			return [one_review_in_page]
 		
