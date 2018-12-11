@@ -54,8 +54,8 @@ def test_get_legacy_review_elements_returns_correct_string_for_more_than_two_rev
 def test_get_legacy_review_elements_returns_correct_string_for_more_than_two_reviews_for_users():
 	return_value = get_legacy_review_elements(['first', 'second', 'third'], 'user')
 	assert return_value == '<li class="review user_review first_review"><span>first</span></li>' \
-					 		 '<li class="review user_review"><span>second</span></li>' \
-					 		 '<li class="review user_review last_review"><span>third</span></li>'
+					 	   '<li class="review user_review"><span>second</span></li>' \
+					 	   '<li class="review user_review last_review"><span>third</span></li>'
 
 
 def test_get_legacy_review_element_has_correct_number_of_elements_for_multiple_reviews_for_critics():
