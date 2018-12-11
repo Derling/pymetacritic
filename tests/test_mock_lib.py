@@ -7,13 +7,21 @@ from .mock_lib import (
 
 def test_create_legacy_review_tag_returns_correct_string_tag():
 	return_value = create_legacy_review_tag(['fake_class'], 'body_of_element')
-	assert return_value == '<li class="fake_class"><span>body_of_element</span></li>'
+	assert return_value == '<li class="fake_class">' \
+						   '<div class="review_body">' \
+						   '<span>body_of_element</span>' \
+						   '</div>'\
+						   '</li>'
 
 
 def test_create_legacy_review_tag_adds_class_to_span_with_large_review_body():
 	review_body = 'awesome review' * 40
 	return_value = create_legacy_review_tag(['fake_class'], review_body)
-	assert return_value == f'<li class="fake_class"><span class="blurb blurb_expanded">{review_body}</span></li>'
+	assert return_value == '<li class="fake_class">' \
+						   '<div class="review_body">' \
+						   f'<span class="blurb blurb_expanded">{review_body}</span>' \
+						   '</div>' \
+						   '</li>'
 
 
 def test_get_legacy_review_elements_contains_correct_review_body_in_element():
@@ -34,28 +42,68 @@ def test_get_legacy_review_elements_returns_one_element_with_one_review_with_cor
 
 def test_get_legacy_review_elements_returns_correct_string_for_two_reviews_for_critics():
 	return_value = get_legacy_review_elements(['review # 1', 'review # 2'], 'critic')
-	assert return_value == '<li class="review critic_review first_review"><span>review # 1</span></li>' \
-					 	   '<li class="review critic_review last_review"><span>review # 2</span></li>'
+	assert return_value == '<li class="review critic_review first_review">' \
+						   '<div class="review_body">' \
+						   '<span>review # 1</span>' \
+						   '</div>' \
+						   '</li>' \
+					 	   '<li class="review critic_review last_review">' \
+					 	   '<div class="review_body">'\
+					 	   '<span>review # 2</span>' \
+					 	   '</div>' \
+					 	   '</li>'
 
 
 def test_get_legacy_review_elements_returns_correct_string_for_two_reviews_for_users():
 	return_value = get_legacy_review_elements(['review # 1', 'review # 2'], 'user')
-	assert return_value == '<li class="review user_review first_review"><span>review # 1</span></li>' \
-					 	   '<li class="review user_review last_review"><span>review # 2</span></li>'
+	assert return_value == '<li class="review user_review first_review">' \
+						   '<div class="review_body">' \
+						   '<span>review # 1</span>' \
+						   '</div>' \
+						   '</li>' \
+					 	   '<li class="review user_review last_review">' \
+					 	   '<div class="review_body">' \
+					 	   '<span>review # 2</span>' \
+					 	   '</div>' \
+					 	   '</li>'
 
 
 def test_get_legacy_review_elements_returns_correct_string_for_more_than_two_reviews_for_critics():
 	return_value = get_legacy_review_elements(['first', 'second', 'third'], 'critic')
-	assert  return_value == '<li class="review critic_review first_review"><span>first</span></li>' \
-					 		'<li class="review critic_review"><span>second</span></li>' \
-						 	'<li class="review critic_review last_review"><span>third</span></li>'
+	assert  return_value == '<li class="review critic_review first_review">' \
+							'<div class="review_body">' \
+							'<span>first</span>' \
+							'</div>' \
+							'</li>' \
+					 		'<li class="review critic_review">' \
+					 		'<div class="review_body">' \
+					 		'<span>second</span>' \
+					 		'</div>' \
+					 		'</li>' \
+						 	'<li class="review critic_review last_review">' \
+						 	'<div class="review_body">' \
+						 	'<span>third</span>' \
+						 	'</div>' \
+						 	'</li>'
 
 
 def test_get_legacy_review_elements_returns_correct_string_for_more_than_two_reviews_for_users():
 	return_value = get_legacy_review_elements(['first', 'second', 'third'], 'user')
-	assert return_value == '<li class="review user_review first_review"><span>first</span></li>' \
-					 	   '<li class="review user_review"><span>second</span></li>' \
-					 	   '<li class="review user_review last_review"><span>third</span></li>'
+	assert return_value == '<li class="review user_review first_review">' \
+						   '<div class="review_body">' \
+						   '<span>first</span>' \
+						   '</div>' \
+						   '</li>' \
+					 	   '<li class="review user_review">' \
+					 	   '<div class="review_body">' \
+					 	   '<span>second</span>' \
+					 	   '</div>' \
+					 	   '</li>' \
+					 	   '<li class="review user_review last_review">' \
+					 	   '<div class="review_body">' \
+					 	   '<span>third</span>' \
+					 	   '</div>' \
+					 	   '</li>'
 
 
 def test_get_legacy_review_element_has_correct_number_of_elements_for_multiple_reviews_for_critics():
@@ -82,7 +130,9 @@ def test_create_legacy_review_elements_returns_correct_string_for_one_review_for
 	return_value = create_legacy_review_elements(['review'], 'user')
 	assert return_value == '<ol class="reviews user_reviews">' \
 					 	   '<li class="review user_review first_review last_review">' \
+					 	   '<div class="review_body">' \
 					 	   '<span>review</span>' \
+					 	   '</div>' \
 					 	   '</li>' \
 					       '</ol>'
 
@@ -91,6 +141,8 @@ def test_create_legacy_review_elements_returns_correct_string_for_one_review_for
 	return_value = create_legacy_review_elements(['review'], 'critic')
 	assert return_value == '<ol class="reviews critic_reviews">' \
 					 	   '<li class="review critic_review first_review last_review">' \
+					 	   '<div class="review_body">' \
 					 	   '<span>review</span>' \
+					 	   '</div>' \
 						   '</li>' \
 						   '</ol>'
