@@ -1,8 +1,10 @@
+
+
 def create_legacy_review_tag(classes, body):
 	li_classes = ' '.join(classes)
 	expanded_body = len(body) >= 400
 	span_class = '' if not expanded_body else ' class="blurb blurb_expanded"'
-	return f'<li class="{li_classes}"><span{span_class}>{body}</span></li>'
+	return f'<li class="{li_classes}"><div class="review_body"><span{span_class}>{body}</span></div></li>'
 
 
 def get_legacy_review_elements(reviews, reviewers):
@@ -27,5 +29,4 @@ def get_legacy_review_elements(reviews, reviewers):
 
 def create_legacy_review_elements(reviews, reviewers):
 	review_elements = get_legacy_review_elements(reviews, reviewers)
-	return f'''<ol class="reviews {reviewers}_reviews">{review_elements}</ol>'''
-
+	return f'<ol class="reviews {reviewers}_reviews">{review_elements}</ol>'
