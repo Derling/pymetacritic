@@ -1,7 +1,8 @@
 from .mock_lib import (
 	create_legacy_review_tag,
 	get_legacy_review_elements,
-	create_legacy_review_elements
+	create_legacy_review_elements,
+	get_legacy_review_div
 )
 
 
@@ -146,3 +147,17 @@ def test_create_legacy_review_elements_returns_correct_string_for_one_review_for
 					 	   '</div>' \
 						   '</li>' \
 						   '</ol>'
+
+
+def test_get_legacy_review_div_returns_correct_div_without_expanded_body():
+	return_value = get_legacy_review_div('review', False, 'class')
+	assert return_value == '<div class="class">' \
+						   '<span>review</span>' \
+						   '</div>'
+
+
+def test_get_legacy_review_div_returns_correct_div_with_expanded_body():
+	return_value = get_legacy_review_div('review', True, 'class')
+	assert return_value == '<div class="class">' \
+						   '<span class="blurb blurb_expanded">review</span>' \
+						   '</div>'
