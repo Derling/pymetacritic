@@ -51,10 +51,12 @@ class MovieParser(MetaCriticParserBase):
 
 		external_summary = review_body.find('a', {'class': 'no_hover'})
 		if bool(external_summary):
+			# critic reviews link out to extrnal sites
 			return external_summary.getText()
 
 		extended_review = review_body.find('span', {'class': 'blurb blurb_expanded'})
 		if bool(extended_review):
+			# user reviews follow legacy format with span and expanded/collapsed versions
 			return extended_review.getText()
 
 		return review_body.getText()
