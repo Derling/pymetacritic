@@ -1,7 +1,8 @@
 # helpers
 
+
 def get_modern_div_wrapper(div_class, child_element):
-	return f'<div class="{div_class}>{child_element}</div>"'
+	return f'<div class="{div_class}">{child_element}</div>'
 
 
 def get_modern_critic_review_div(review):
@@ -22,7 +23,7 @@ def get_modern_review_elements_for_users(reviews, wrapper_class):
 	review_elements = []
 
 	for review in reviews:
-		expanded_body = len(body) >= 400
+		expanded_body = len(review) >= 400
 		review_div = get_legacy_review_div(review, expanded_body, 'summary')
 		review_elements.append(get_modern_div_wrapper(wrapper_class, review_div))
 
@@ -61,6 +62,7 @@ def get_legacy_review_elements(reviews, reviewers):
 	return ''.join(review_elements)
 
 # lib fucntions
+
 
 def create_legacy_review_elements(reviews, reviewers):
 	if not len(reviews):
