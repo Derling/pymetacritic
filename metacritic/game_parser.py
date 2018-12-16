@@ -1,5 +1,6 @@
 from .parser_base import MetaCriticParserBase
 
+
 class GameParser(MetaCriticParserBase):
 	# a map for the supported platforms and their metacritic alias
 	PLATFORMS = {
@@ -38,23 +39,19 @@ class GameParser(MetaCriticParserBase):
 		self._game = game.title()
 		self._metacritic_name = self.format_title_name(game)
 
-
 	@property
 	def platform(self):
 		""" Getter method for the platform attribute. """
 		return self._platform
 
-	
 	@property
 	def game(self):
 		""" Getter method for the game attribute. """
 		return self._game
 
-
 	def get_url(self):
 		""" Returns the base url that will get used when making requests """
 		return '/'.join([self.METACRITIC_URL, 'game', f'{self._metacritic_platform}', f'{self._metacritic_name}'])
-
 
 	def _get_review_body(self, review_element):
 		""" Returns the content of a review element

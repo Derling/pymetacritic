@@ -1,5 +1,6 @@
 from .parser_base import MetaCriticParserBase
 
+
 class TVParser(MetaCriticParserBase):
     """ Metacritic parser for tv shows
 
@@ -10,30 +11,27 @@ class TVParser(MetaCriticParserBase):
         self._metacritic_name = self.format_title_name(show)
         self._season = season
 
-
     @property
     def show(self):
         return self._show
-
 
     @property
     def season(self):
         return self._season
 
     def get_url(self):
-    	""" Returns the base url that will get used when making requests """
-    	return '/'.join([self.METACRITIC_URL, 'tv', self._metacritic_name, f'season-{self._season}'])
-
+        """ Returns the base url that will get used when making requests """
+        return '/'.join([self.METACRITIC_URL, 'tv', self._metacritic_name, f'season-{self._season}'])
 
     def _get_review_body(self, review_element):
         """ Returns the content of a review element
 
         Args:
-    		review_element(bs4.element.Tag): a bs4 element tag object
+            review_element(bs4.element.Tag): a bs4 element tag object
 
-    	Returns:
-    		The body of a review
-    	"""
+        Returns:
+            The body of a review
+        """
         review_body = review_element.find('div', {'class': 'review_body'})
 
         extended_body = review_body.find('span', {'class': 'blurb blurb_expanded'})
@@ -41,7 +39,6 @@ class TVParser(MetaCriticParserBase):
             return extended_body.getText()
 
         return review_body.getText()
-
 
     def _get_reviews(self, soup, reviewer):
         """ Get all the review elements for a given html doc

@@ -52,7 +52,6 @@ class MetaCriticParserBase:
 
         return word_counts
 
-
     def get_words(self, review):
         """ Retrieve an array of words used in the body of a review(drops common stop words)
 
@@ -72,7 +71,6 @@ class MetaCriticParserBase:
                 words.append(casefold_word)
 
         return words
-
 
     def get_reviewers_word_count(self, url, reviewers, count=None, page=0):
         """ Recursively get the word count for a reviewer type
@@ -103,7 +101,6 @@ class MetaCriticParserBase:
 
         return count
 
-
     def _page_has_more_reviews(self, soup):
         """ Determines whether or not the given html Metacritic doc links to another page with more reviews
 
@@ -114,7 +111,6 @@ class MetaCriticParserBase:
             A boolean that determines whether or not there are more pages associated with the current html doc
         """
         return bool(soup.find('a', {'class':'action','rel':'next'}, href=True))
-
 
     def _update_reviewer_count(self, reviewer):
         """ Updates the number of reviews processed for users or critics
@@ -138,7 +134,6 @@ class MetaCriticParserBase:
         """
         return title.replace(' ', '-').replace(':', '').lower()
 
-
     def _get_review_body(self, review_element):
         """ Interface method derived classes must implement.
 
@@ -152,7 +147,6 @@ class MetaCriticParserBase:
         Should return the url that will get used to make the request
         """
         raise NotImplemented
-
 
     def _get_reviews(self, soup, reviewer):
         """ Interface method derived classes must implement.

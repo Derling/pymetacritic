@@ -255,4 +255,4 @@ STOP_WORDS = {
      'yourself',
      'yourselves',
      'z'
- }
+}

@@ -19,34 +19,30 @@ class MovieParser(MetaCriticParserBase):
 		self._metacritic_name = self.format_title_name(movie)
 		self._year = year
 
-
 	@property
 	def movie(self):
 		""" Getter method for the Movie attribute. """
 		return self._movie
 
-
 	@property
 	def year(self):
 		""" Getter method for the year attribute. """
-		return _year
-
+		return self._year
 
 	def get_url(self):
 		""" Returns the base url that will get used when making requests """
 		return '/'.join([self.METACRITIC_URL, 'movie', f'{self._metacritic_name}-{self._year}']) if self._year \
-			   else '/'.join([self.METACRITIC_URL, 'movie', f'{self._metacritic_name}'])
-
+			else '/'.join([self.METACRITIC_URL, 'movie', f'{self._metacritic_name}'])
 
 	def _get_review_body(self, review_element):
 		""" Returns the contennt of a review element
 
-        Args:
-        	review_element(bs4.element.Tag): a bs4 element tag object
+		Args:
+			review_element(bs4.element.Tag): a bs4 element tag object
 
-        Returns:
-        	The body of a review
-        """
+		Returns:
+			The body of a review
+		"""
 		review_body = review_element.find('div', {'class': 'summary'})
 
 		external_summary = review_body.find('a', {'class': 'no_hover'})
@@ -60,7 +56,6 @@ class MovieParser(MetaCriticParserBase):
 			return extended_review.getText()
 
 		return review_body.getText()
-
 
 	def _get_reviews(self, soup, reviewer):
 		"""Get all the review elements for a given html doc
