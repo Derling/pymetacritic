@@ -2,7 +2,13 @@ from .mock_lib import (
 	create_legacy_review_tag,
 	get_legacy_review_elements,
 	create_legacy_review_elements,
-	get_legacy_review_div
+	get_legacy_review_div,
+	get_modern_div_wrapper,
+	get_modern_critic_review_div,
+	get_modern_review_elements_for_critics,
+	get_modern_review_elements_for_users,
+	create_modern_review_elements_for_critics,
+	create_modern_review_elements_for_users
 )
 
 
@@ -10,8 +16,10 @@ def test_create_legacy_review_tag_returns_correct_string_tag():
 	return_value = create_legacy_review_tag(['fake_class'], 'body_of_element')
 	assert return_value == '<li class="fake_class">' \
 						   '<div class="review_body">' \
-						   '<span>body_of_element</span>' \
-						   '</div>'\
+						   '<span>' \
+						   'body_of_element' \
+						   '</span>' \
+						   '</div>' \
 						   '</li>'
 
 
@@ -161,3 +169,99 @@ def test_get_legacy_review_div_returns_correct_div_with_expanded_body():
 	assert return_value == '<div class="class">' \
 						   '<span class="blurb blurb_expanded">review</span>' \
 						   '</div>'
+
+
+def test_get_modern_div_wrapper_returns_correct_div():
+	assert get_modern_div_wrapper('div class', '<child>element</child>') == '<div class="div class">' \
+																			'<child>' \
+																			'element' \
+																			'</child>' \
+																			'</div>'
+
+
+def test_get_modern_critic_review_div_returns_correct_div():
+	assert get_modern_critic_review_div('review') == '<div class="summary">' \
+													 '<a class="no_hover">' \
+													 'review' \
+													 '</a>' \
+													 '</div>'
+
+
+def test_get_modern_review_elements_for_critics_returns_correct_div():
+	assert get_modern_review_elements_for_critics(
+		['review 1', 'review 2'], 'wrapper class') == '<div class="wrapper class">' \
+													  '<div class="summary">' \
+													  '<a class="no_hover">' \
+													  'review 1' \
+													  '</a>' \
+													  '</div>' \
+													  '</div>' \
+													  '<div class="wrapper class">' \
+													  '<div class="summary">' \
+													  '<a class="no_hover">' \
+													  'review 2' \
+													  '</a>' \
+													  '</div>' \
+													  '</div>'
+
+
+def test_get_modern_review_elements_for_critics_returns_empty_string_for_no_reviews():
+	assert get_modern_review_elements_for_critics([], 'class') == ''
+
+
+def test_get_modern_review_elements_for_users_returns_correct_div():
+	assert get_modern_review_elements_for_users(
+		['review 1', 'review 2'], 'wrapper class') == '<div class="wrapper class">' \
+													  '<div class="summary">' \
+													  '<span>' \
+													  'review 1' \
+													  '</span>' \
+													  '</div>' \
+													  '</div>' \
+													  '<div class="wrapper class">' \
+													  '<div class="summary">' \
+													  '<span>' \
+													  'review 2' \
+													  '</span>' \
+													  '</div>' \
+													  '</div>'
+
+
+def test_get_modern_review_elements_for_users_returns_correct_div_for_long_user_reviews():
+	long_user_review = 'abcdef' * 100
+	assert get_modern_review_elements_for_users(
+		[long_user_review], 'wrapper class') == '<div class="wrapper class">' \
+												'<div class="summary">' \
+												'<span class="blurb blurb_expanded">' \
+												f'{long_user_review}' \
+												'</span>' \
+												'</div>' \
+												'</div>'
+
+
+def test_create_modern_review_elements_for_critics_returns_correct_div():
+	assert create_modern_review_elements_for_critics(['review']) == '<div class="critic_reviews">' \
+																	'<div class="review pad_top1 pad_btm1">' \
+																	'<div class="summary">' \
+																	'<a class="no_hover">' \
+																	'review' \
+																	'</a>' \
+																	'</div>' \
+																	'</div>' \
+																	'</div>'
+
+
+def test_create_modern_review_elements_for_critics_returns_empty_string_for_no_reviews():
+	assert create_modern_review_elements_for_critics([]) == ''
+
+
+def test_create_modern_review_elements_for_users_returns_correct_div():
+	assert create_modern_review_elements_for_users(['review']) == '<div class="user_reviews">' \
+																  '<div class="review pad_top1">' \
+																  '<div class="summary">' \
+																  '<span>' \
+																  'review' \
+																  '</span>' \
+																  '</div>' \
+																  '</div>' \
+																  '</div>'
